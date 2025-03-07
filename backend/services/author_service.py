@@ -93,23 +93,22 @@ def send_message_service(email,tracking_code,content):
 
 
 def check_status_service(email, tracking_code):
-    """Yazarın makale durumunu sorgulaması."""
     if not email or not tracking_code:
-        return {"error": "tracking_code ve email gerekli."}, 400
+        return {"error": "Tracking_code and email are required."}, 400
 
     author = User.query.filter_by(email=email, role="author").first()
     if not author:
-        return {"error": "Yazar bulunamadı."}, 404
+        return {"error": "Author not found"}, 404
 
     article = Article.query.filter_by(tracking_code=tracking_code, author_id=author.id).first()
     if not article:
-        return {"error": "Makale bulunamadı veya size ait değil."}, 404
+        return {"error": "The article was not found or does not belong to you."}, 404
 
     #! Burada review / assignment gibi ek bilgiler döndürebilirsin
     response_data = {
         "tracking_code": article.tracking_code,
         "status": article.status,
-        "message": "Şu anki durum: " + article.status
+        "message": "Current status: " + article.status
     }
 
     return response_data, 200
