@@ -19,7 +19,6 @@ def get_or_create_author_by_email(email):
         
     return author
 
-
 def upload_article_service(email,pdf_file):
     if not email or "@" not in email:
         return {"error" : "A valid email address must be entered."},400
@@ -82,7 +81,7 @@ def send_message_service(email,tracking_code,content):
         content = content
     )
     
-    db.session(msg)
+    db.session.add(msg)
     db.session.commit()
     
     log = Log(article_id=article.id, user_id=author.id, action="author_sent_message")
@@ -134,7 +133,6 @@ def reupload_article_service(email, tracking_code, pdf_file):
     pdf_path = os.path.join(UPLOAD_FOLDER, filename)
     pdf_file.save(pdf_path)
 
-    
     article.original_pdf_path = pdf_path
     article.status = "reuploaded"
     db.session.commit()
@@ -150,7 +148,9 @@ def reupload_article_service(email, tracking_code, pdf_file):
     }, 200
 
 
-
+def nlp_extract_keywords(pdf_path):
+    # Code will write after npl 
+    return "AI, Deep Learning"
 
 
 
