@@ -75,3 +75,16 @@ def submit_review_service(email,tracking_code,review_text,is_final=False):
         "review_id": new_review.id,
         "is_final": is_final
     }, 200
+    
+def list_all_reviewers_service():
+    reviewers = User.query.filter_by(role="reviewer").all()
+    results = []
+    for rev in reviewers:
+        results.append({
+            "id": rev.id,
+            "email": rev.email,
+            "created_at": rev.created_at.isoformat() if rev.created_at else None,
+            "updated_at": rev.updated_at.isoformat() if rev.updated_at else None
+        })
+
+    return {"reviewers": results}, 200
