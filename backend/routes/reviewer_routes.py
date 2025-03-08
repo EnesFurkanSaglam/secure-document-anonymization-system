@@ -3,14 +3,14 @@ from services import reviewer_service
 
 reviewer_bp = Blueprint("reviewer_bp",__name__)
 
-
+#!not tested
 @reviewer_bp.route("/assigned-articles", methods=["GET"])
 def list_assigned_articles():
     email = request.args.get("email", "").strip()
     data, status = reviewer_service.list_assigned_articles_service(email)
     return jsonify(data), status
 
-
+#!not tested
 @reviewer_bp.route("/submit-review", methods=["POST"])
 def submit_review():
     body = request.json or {}
@@ -22,6 +22,7 @@ def submit_review():
     data, status = reviewer_service.submit_review_service(email, tracking_code, review_text, is_final)
     return jsonify(data), status
 
+#!not tested
 @reviewer_bp.route("/all-reviewers", methods=["GET"])
 def list_all_reviewers():
     data, status = reviewer_service.list_all_reviewers_service()

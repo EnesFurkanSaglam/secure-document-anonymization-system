@@ -13,6 +13,13 @@ def list_articles():
         data, code = editor_service.list_all_articles_service()
     return jsonify(data), code
 
+@editor_bp.route("/view-logs", methods=["GET"])
+def view_logs():
+
+    data, code = editor_service.view_logs_service()
+    return jsonify(data), code
+
+#!not tested
 @editor_bp.route("/auto-assign-article", methods=["POST"])
 def auto_assign_article():
 
@@ -21,13 +28,6 @@ def auto_assign_article():
 
     data, code = editor_service.auto_assign_article_service(tracking_code)
     return jsonify(data), code
-
-@editor_bp.route("/view-logs", methods=["GET"])
-def view_logs():
-
-    data, code = editor_service.view_logs_service()
-    return jsonify(data), code
-
 
 # @editor_bp.route("/anonymize-article", methods=["POST"])
 # def anonymize_article():

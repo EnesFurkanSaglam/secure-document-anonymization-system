@@ -1,0 +1,52 @@
+.home-container {
+    text-align: center;
+    margin: 50px auto;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.home-welcome {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.home-description {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    color: #555;
+}
+
+.home-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.home-button {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+    opacity: 0.9;
+}
+
+.home-button-author {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.home-button-editor {
+    background-color: #2196F3;
+    color: #fff;
+}
+
+.home-button-reviewer {
+    background-color: #FF5722;
+    color: #fff;
+}
