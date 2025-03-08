@@ -8,9 +8,9 @@ class Review(db.Model):
     assignment_id = db.Column(db.Integer, db.ForeignKey('article_assignments.id'), nullable=False)
     review_text = db.Column(db.Text, nullable=True)
     submitted_at = db.Column(db.DateTime, default=datetime.utcnow)
-    is_final = db.Column(db.Boolean, default=False)  # son değerlendirme mi?
+    is_final = db.Column(db.Boolean, default=False)  # final mi?
 
-    assignment = db.relationship("ArticleAssignment", backref="review", uselist=False)
+    assignment = db.relationship("ArticleAssignment", back_populates="reviews")
 
     def __repr__(self):
         return f"<Review {self.id}>"

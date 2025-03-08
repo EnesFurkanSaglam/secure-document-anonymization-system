@@ -14,5 +14,7 @@ class ArticleAssignment(db.Model):
     article = db.relationship("Article", backref="assignments", lazy=True)
     reviewer = db.relationship("User", backref="review_assignments", lazy=True)
 
+    reviews = db.relationship("Review", back_populates="assignment", lazy=True)
+
     def __repr__(self):
-        return f"<ArticleAssignment article:{self.article_id} reviewer:{self.reviewer_id}>"
+        return f"<ArticleAssignment article:{self.article_id}, reviewer:{self.reviewer_id}>"
