@@ -1,0 +1,131 @@
+.upl-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    font-family: 'Roboto', 'Segoe UI', sans-serif;
+}
+
+.upl-title {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.upl-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.upl-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.upl-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.upl-input {
+    padding: 12px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.upl-input:focus {
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+    outline: none;
+}
+
+.upl-file-input {
+    margin-top: 5px;
+}
+
+.upl-file-input::file-selector-button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background-color: #f7fafc;
+    color: #4a5568;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 15px;
+}
+
+.upl-file-input::file-selector-button:hover {
+    background-color: #edf2f7;
+}
+
+.upl-submit-button {
+    margin-top: 10px;
+    padding: 14px 20px;
+    background-color: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.upl-submit-button:hover {
+    background-color: #2c5282;
+}
+
+.upl-message {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    background-color: #e6f7ff;
+    border-left: 4px solid #3182ce;
+    color: #2c5282;
+    word-break: break-word;
+}
+
+.upl-error {
+    background-color: #fed7d7;
+    border-left: 4px solid #e53e3e;
+    color: #c53030;
+}
+
+.upl-success {
+    background-color: #c6f6d5;
+    border-left: 4px solid #38a169;
+    color: #2f855a;
+}
+
+.upl-tracking-code {
+    font-weight: bold;
+    background-color: #f0fff4;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin: 0 4px;
+    display: inline-block;
+}
+
+@media (max-width: 640px) {
+    .upl-container {
+        padding: 20px;
+        margin: 20px auto;
+    }
+
+    .upl-title {
+        font-size: 24px;
+    }
+}

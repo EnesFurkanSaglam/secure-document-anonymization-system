@@ -25,32 +25,37 @@ class AuthorService:
     def upload_article_service(email, pdf_file):
         if not email or "@" not in email:
             return {"error": "A valid email address must be entered."}, 400
-        
+    
         if not pdf_file or pdf_file.filename == "":
             return {"error": "PDF file could not be loaded or invalid file name"}, 400
-        
+    
         author = AuthorService.get_or_create_author_by_email(email)
+    
         
-        filename = secure_filename(pdf_file.filename)
+        original_filename = secure_filename(pdf_file.filename)
+        
+        unique_suffix = uuid.uuid4().hex
+        filename = f"{unique_suffix}_{original_filename}"
+    
         pdf_path = os.path.join(UPLOAD_FOLDER, filename)
         pdf_file.save(pdf_path)
-        
+    
         tracking_code = AuthorService.generate_tracking_code()
-        
+    
         new_article = Article(
             author_id=author.id,
             tracking_code=tracking_code,
             original_pdf_path=pdf_path,
             status="uploaded"
         )
-        
+    
         db.session.add(new_article)
         db.session.commit()
-        
+    
         log = Log(article_id=new_article.id, user_id=author.id, action="article_uploaded")
         db.session.add(log)
         db.session.commit()
-        
+    
         return {"message": "Article uploaded successfully", "tracking_code": tracking_code}, 200
 
     @staticmethod
@@ -101,6 +106,8 @@ class AuthorService:
         
         return {"tracking_code": article.tracking_code, "status": article.status, "message": "Current status: " + article.status}, 200
 
+
+
     @staticmethod
     def reupload_article_service(email, tracking_code, pdf_file):
         if not email or "@" not in email or not tracking_code:
@@ -117,7 +124,12 @@ class AuthorService:
         if not article:
             return {"error": "The article was not found or does not belong to you."}, 404
 
-        filename = secure_filename(pdf_file.filename)
+    
+        original_filename = secure_filename(pdf_file.filename)
+    
+        unique_suffix = uuid.uuid4().hex
+        filename = f"{unique_suffix}_{original_filename}"
+
         pdf_path = os.path.join(UPLOAD_FOLDER, filename)
         pdf_file.save(pdf_path)
 
@@ -130,6 +142,7 @@ class AuthorService:
         db.session.commit()
 
         return {"message": "Article updated (revision uploaded).", "new_path": pdf_path}, 200
+
 
     @staticmethod
     def nlp_extract_keywords(pdf_path):
