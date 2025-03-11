@@ -1,5 +1,8 @@
 from datetime import datetime
 from models import db,User,Article,ArticleAssignment,Review,Log
+from config import REVIEWS_FOLDER
+import os
+import uuid
 
 class ReviewerService:
     
@@ -32,30 +35,27 @@ class ReviewerService:
         return {"assigned_articles": results}, 200
 
     @staticmethod
-    def submit_review_service(email,tracking_code,review_text,is_final=False):
+    def submit_review_service(email, tracking_code, review_text, is_final=False):
         if not email or not tracking_code or not review_text:
-            return {"error": "Missing value"}
-    
+            return {"error": "Missing value"}, 400
+
         reviewer = User.query.filter_by(email=email, role="reviewer").first()
-    
         if not reviewer:
-            return {"error" : "Author not found"},404
-    
-    
+            return {"error": "Reviewer not found"}, 404
+
         article = Article.query.filter_by(tracking_code=tracking_code).first()
         if not article:
             return {"error": "Article not found."}, 404
-    
+
         assignment = ArticleAssignment.query.filter_by(
             article_id=article.id, 
             reviewer_id=reviewer.id, 
             active=True
         ).first()
-    
         if not assignment:
             return {"error": "This article has not been assigned to this referee or the assignment is not active."}, 400
 
-    
+        # 1) new_review objesini oluştur
         new_review = Review(
             assignment_id=assignment.id,
             review_text=review_text,
@@ -64,7 +64,21 @@ class ReviewerService:
         db.session.add(new_review)
         db.session.commit()
 
-    
+        # 2) Burada hakem, "anonymized_pdf_path" (article.anonymized_pdf_path) dosyasını alıp
+        # "review" notlarını PDF sonuna ekleyerek TEK PDF yapıyor olmalı.
+        # Biz bu işlemi placeholder yapalım:
+        merged_filename = f"review_{assignment.id}_{uuid.uuid4()}.pdf"
+        merged_pdf_path = os.path.join(REVIEWS_FOLDER, merged_filename)
+
+        # (placeholder) PDF birleştirme:
+        # merge_pdf_files(article.anonymized_pdf_path, reviewer's comments => merged_pdf_path)
+        # Şimdilik gerçek kodu geçiyoruz.
+
+        # 3) new_review.review_pdf_path'i güncelle
+        new_review.review_pdf_path = merged_pdf_path
+        db.session.commit()
+
+        # 4) Log kaydı
         new_log = Log(
             article_id=article.id,
             user_id=reviewer.id,
@@ -76,7 +90,8 @@ class ReviewerService:
         return {
             "message": "Review saved",
             "review_id": new_review.id,
-            "is_final": is_final
+            "is_final": is_final,
+            "review_pdf_path": merged_pdf_path  # İstersen dönebilirsin
         }, 200
     
     @staticmethod    

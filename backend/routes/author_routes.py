@@ -29,7 +29,17 @@ def reupload_article():
     return jsonify(data), status
 
 
-#! not tested
+@author_bp.route("/messages",methods=["GET"])
+def list_messages():
+    email = request.args.get("email","").strip()
+    tracking_code = request.args.get("tracking_code","").strip()
+    
+    data,code = author_service.list_conversation_service(email,tracking_code)
+    
+    return jsonify(data),code
+
+
+
 @author_bp.route("/send-message",methods=["POST"])
 def send_message():
     body = request.json or {}

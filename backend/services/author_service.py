@@ -2,6 +2,8 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 from models import db, User, Article, Message, Log
+from config import ORIGINAL_FOLDER
+
 
 UPLOAD_FOLDER = "uploads"
 
@@ -37,7 +39,7 @@ class AuthorService:
         unique_suffix = uuid.uuid4().hex
         filename = f"{unique_suffix}_{original_filename}"
     
-        pdf_path = os.path.join(UPLOAD_FOLDER, filename)
+        pdf_path = os.path.join(ORIGINAL_FOLDER, filename)
         pdf_file.save(pdf_path)
     
         tracking_code = AuthorService.generate_tracking_code()
@@ -57,40 +59,8 @@ class AuthorService:
         db.session.commit()
     
         return {"message": "Article uploaded successfully", "tracking_code": tracking_code}, 200
-
-    @staticmethod
-    def send_message_service(email, tracking_code, content):
-        if not email or not tracking_code or not content:
-            return {"error": "Missing value"}, 400
-        
-        author = User.query.filter_by(email=email, role="author").first()
-        if not author:
-            return {"error": "Author could not be found"}, 404
-        
-        article = Article.query.filter_by(tracking_code=tracking_code, author_id=author.id).first()
-        if not article:
-            return {"error": "The article was not found or does not belong to you."}, 404
-        
-        editor_user = User.query.filter_by(role="editor").first()
-        if not editor_user:
-            return {"error": "Editor could not be found."}, 500
-        
-        msg = Message(
-            sender_id=author.id,
-            receiver_id=editor_user.id,
-            article_id=article.id,
-            content=content
-        )
-        
-        db.session.add(msg)
-        db.session.commit()
-        
-        log = Log(article_id=article.id, user_id=author.id, action="author_sent_message")
-        db.session.add(log)
-        db.session.commit()
-        
-        return {"message": "Message forwarded to editor."}, 200
-
+    
+    
     @staticmethod
     def check_status_service(email, tracking_code):
         if not email or not tracking_code:
@@ -144,6 +114,65 @@ class AuthorService:
         return {"message": "Article updated (revision uploaded).", "new_path": pdf_path}, 200
 
 
+    @staticmethod
+    def list_conversation_service(email,tracking_code):
+        
+        author = User.query.filter_by(email=email,role="author").first()
+        if not author:
+            return{"error" : "Author not found"},404
+        
+        article = Article.query.filter_by(tracking_code=tracking_code, author_id=author.id).first()
+        if not article:
+            return {"error": "Article not found or not yours."}, 404
+        
+        msgs = Message.query.filter_by(article_id=article.id).order_by(Message.created_at.asc()).all()
+        
+        conversation = []
+        for m in msgs:
+            conversation.append({
+                "message_id": m.id,
+                "sender_id": m.sender_id,
+                "receiver_id": m.receiver_id,
+                "content": m.content,
+                "created_at": m.created_at.isoformat() if m.created_at else None
+            })
+
+        return {"conversation": conversation}, 200
+        
+                  
+    @staticmethod
+    def send_message_service(email, tracking_code, content):
+        if not email or not tracking_code or not content:
+            return {"error": "Missing value"}, 400
+        
+        author = User.query.filter_by(email=email, role="author").first()
+        if not author:
+            return {"error": "Author could not be found"}, 404
+        
+        article = Article.query.filter_by(tracking_code=tracking_code, author_id=author.id).first()
+        if not article:
+            return {"error": "The article was not found or does not belong to you."}, 404
+        
+        editor_user = User.query.filter_by(role="editor").first()
+        if not editor_user:
+            return {"error": "Editor not found."}, 500
+        
+        msg = Message(
+            sender_id=author.id,
+            receiver_id=editor_user.id,
+            article_id=article.id,
+            content=content
+        )
+        
+        db.session.add(msg)
+        db.session.commit()
+        
+        log = Log(article_id=article.id, user_id=author.id, action="author_sent_message")
+        db.session.add(log)
+        db.session.commit()
+        
+        return {"message": "Message forwarded to editor."}, 200
+    
     @staticmethod
     def nlp_extract_keywords(pdf_path):
         return "AI, Deep Learning"

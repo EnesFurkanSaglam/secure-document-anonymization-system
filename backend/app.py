@@ -1,12 +1,12 @@
 import os
-from flask import Flask
+from flask import Flask, send_from_directory, abort
 from models import db
 from routes import author_bp, editor_bp, reviewer_bp
 from flask_cors import CORS
+from config import ORIGINAL_FOLDER
 
 def create_app():
     app = Flask(__name__)
-    
     
     CORS(app)  
 
@@ -21,6 +21,16 @@ def create_app():
     with app.app_context():
         db.create_all()
 
+   
+    @app.route('/pdf/<path:filename>')
+    def serve_pdf(filename):
+        file_path = os.path.join(ORIGINAL_FOLDER, filename)
+        if os.path.exists(file_path):
+            return send_from_directory(ORIGINAL_FOLDER, filename)
+        else:
+            abort(404)
+    
+    
     app.register_blueprint(author_bp, url_prefix="/author")
     app.register_blueprint(editor_bp, url_prefix="/editor")
     app.register_blueprint(reviewer_bp, url_prefix="/reviewer")
