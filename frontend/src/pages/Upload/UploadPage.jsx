@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import './UploadPage.css'; // Import the CSS file
+import './UploadPage.css';
 
 function UploadPage() {
     const [email, setEmail] = useState('');
     const [pdfFile, setPdfFile] = useState(null);
     const [message, setMessage] = useState('');
-    const [messageType, setMessageType] = useState(''); // 'success' or 'error'
+    const [messageType, setMessageType] = useState('');
     const [trackingCode, setTrackingCode] = useState('');
 
     const handleSubmit = async (e) => {

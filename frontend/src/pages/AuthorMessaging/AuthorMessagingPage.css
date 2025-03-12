@@ -113,7 +113,6 @@
     background-color: #dde4e8;
 }
 
-/* Make the login responsive */
 @media (max-width: 480px) {
     .login-container {
         padding: 20px;

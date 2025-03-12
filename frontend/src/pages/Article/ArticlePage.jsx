@@ -5,10 +5,8 @@ import { Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import './ArticlePage.css';
 
-// pdfjs worker'ı CDN üzerinden ayarlıyoruz:
+
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-
-
 
 function ArticlePage() {
     const { articleId } = useParams();
@@ -44,8 +42,6 @@ function ArticlePage() {
     }, [articleId]);
 
     const handleViewPdf = (pdfPath) => {
-        // Eğer pdfPath veritabanında tam yol olarak saklanıyorsa,
-        // sadece dosya adını çekiyoruz (hem / hem \ için):
         const filename = pdfPath.split(/[\\/]/).pop();
         setActivePdf(`http://127.0.0.1:5000/pdf/${filename}`);
     };

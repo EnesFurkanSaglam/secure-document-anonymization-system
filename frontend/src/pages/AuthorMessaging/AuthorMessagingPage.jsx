@@ -13,12 +13,12 @@ function AuthorMessagingPage() {
         setFormError("");
 
         if (!email.trim()) {
-            setFormError("Lütfen email adresinizi girin.");
+            setFormError("Please enter your email address.");
             return;
         }
 
         if (!trackingCode.trim()) {
-            setFormError("Lütfen takip kodunuzu girin.");
+            setFormError("Please enter your tracking code.");
             return;
         }
 
@@ -29,9 +29,9 @@ function AuthorMessagingPage() {
         <div className="author-page-container">
             {!showChat ? (
                 <div className="login-container">
-                    <h2>Yazar Mesajlaşma Sistemi</h2>
+                    <h2>Author Messaging System</h2>
                     <p className="login-subtitle">
-                        Editörünüzle mesajlaşmak için lütfen bilgilerinizi girin.
+                        Please enter your information to message your editor.
                     </p>
 
                     {formError && <div className="form-error">{formError}</div>}
@@ -44,25 +44,25 @@ function AuthorMessagingPage() {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Email adresiniz"
+                                placeholder="Your email address"
                                 className="form-input"
                             />
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="trackingCode">Takip Kodu</label>
+                            <label htmlFor="trackingCode">Tracking Code</label>
                             <input
                                 id="trackingCode"
                                 type="text"
                                 value={trackingCode}
                                 onChange={(e) => setTrackingCode(e.target.value)}
-                                placeholder="Takip kodunuz"
+                                placeholder="tracking code"
                                 className="form-input"
                             />
                         </div>
 
                         <button type="submit" className="login-button">
-                            Mesajları Görüntüle
+                            View Messages
                         </button>
                     </form>
                 </div>
@@ -75,7 +75,7 @@ function AuthorMessagingPage() {
                         baseUrl="http://localhost:5000"
                     />
                     <button onClick={() => setShowChat(false)} className="back-button">
-                        Giriş Ekranına Dön
+                        Return to Login Screen
                     </button>
                 </div>
             )}

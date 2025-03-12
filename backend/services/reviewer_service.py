@@ -14,7 +14,7 @@ class ReviewerService:
         reviewer = User.query.filter_by(email=email, role="reviewer").first()
     
         if not reviewer:
-            return {"error" : "Revewer nnot found"}
+            return {"error" : "Revewer not found"}
     
         assignments = ArticleAssignment.query.filter_by(reviewer_id=reviewer.id, active=True).all()
     
@@ -91,7 +91,7 @@ class ReviewerService:
             "message": "Review saved",
             "review_id": new_review.id,
             "is_final": is_final,
-            "review_pdf_path": merged_pdf_path  # İstersen dönebilirsin
+            "review_pdf_path": merged_pdf_path 
         }, 200
     
     @staticmethod    

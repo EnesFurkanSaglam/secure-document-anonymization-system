@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import './ReuploadPage.css'; // Import the CSS file
+import './ReuploadPage.css';
 
 function ReuploadPage() {
     const [email, setEmail] = useState('');
     const [trackingCode, setTrackingCode] = useState('');
     const [pdfFile, setPdfFile] = useState(null);
     const [message, setMessage] = useState('');
-    const [messageType, setMessageType] = useState(''); // 'success' or 'error'
+    const [messageType, setMessageType] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './EditorPage.css'; // Import the CSS file
+import './EditorPage.css';
+
+
 
 function EditorPage() {
     const [articles, setArticles] = useState([]);
@@ -8,7 +10,7 @@ function EditorPage() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fetch articles from the backend endpoint
+
         setLoading(true);
         fetch('http://127.0.0.1:5000/editor/list-articles')
             .then(response => {
@@ -18,7 +20,7 @@ function EditorPage() {
                 return response.json();
             })
             .then(data => {
-                // Check if the data has an "articles" key and update state
+
                 if (data.articles) {
                     setArticles(data.articles);
                 }

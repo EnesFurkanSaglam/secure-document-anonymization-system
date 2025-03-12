@@ -7,8 +7,6 @@ function ChatPage({ role, email, trackingCode, baseUrl = "" }) {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [sending, setSending] = useState(false);
-    // Optionally, add a state for polling if you need more control
-    // const [isPolling, setIsPolling] = useState(true);
     const messagesEndRef = useRef(null);
     const pollingIntervalRef = useRef(null);
 
@@ -65,12 +63,12 @@ function ChatPage({ role, email, trackingCode, baseUrl = "" }) {
                 setError(null);
             } else {
                 if (!silent) {
-                    setError("Bilgileriniz doğrulanamadı. Lütfen tekrar deneyin.");
+                    setError("Your information could not be verified. Please try again.");
                 }
             }
         } catch (err) {
             if (!silent) {
-                setError("Sunucuya bağlanırken hata oluştu. Lütfen tekrar deneyin.");
+                setError("An error occurred while connecting to the server. Please try again.");
             }
         } finally {
             if (!silent) {
@@ -130,10 +128,10 @@ function ChatPage({ role, email, trackingCode, baseUrl = "" }) {
                     setMessages(prev => [...prev, optimisticMsg]);
                 }
             } else {
-                setError("Mesaj gönderilirken hata oluştu. Lütfen tekrar deneyin.");
+                setError("There was an error sending the message. Please try again.");
             }
         } catch (err) {
-            setError("Sunucuya bağlanırken hata oluştu. Lütfen tekrar deneyin.");
+            setError("An error occurred while connecting to the server. Please try again.");
         } finally {
             setSending(false);
         }
@@ -158,14 +156,12 @@ function ChatPage({ role, email, trackingCode, baseUrl = "" }) {
         }
     };
 
-    // Here, we define a variable for polling indicator.
-    // Adjust the logic according to your needs.
-    const isPolling = true; // or derive from some state or condition
+    const isPolling = true;
 
     return (
         <div className="chat-container">
             <div className="chat-header">
-                <h3>{role === "author" ? "Yazar Mesajlaşma" : "Editör Mesajlaşma"}</h3>
+                <h3>{role === "author" ? "Author Messaging" : "Editor Messaging"}</h3>
                 {isPolling && <div className="chat-sync-indicator"></div>}
             </div>
 
@@ -173,7 +169,7 @@ function ChatPage({ role, email, trackingCode, baseUrl = "" }) {
 
             <div className="messages-container">
                 {loading && messages.length === 0 ? (
-                    <div className="chat-loading">Mesajlar yükleniyor...</div>
+                    <div className="chat-loading">Loading messages...</div>
                 ) : messages.length > 0 ? (
                     <>
                         {messages.map((msg) => (
@@ -194,14 +190,14 @@ function ChatPage({ role, email, trackingCode, baseUrl = "" }) {
                         <div ref={messagesEndRef} />
                     </>
                 ) : (
-                    <div className="no-messages">Henüz mesaj bulunmamaktadır.</div>
+                    <div className="no-messages">There are no messages yet.</div>
                 )}
             </div>
 
             <div className="message-input-container">
                 <textarea
                     className="message-input"
-                    placeholder="Mesajınızı yazın..."
+                    placeholder="Write your message..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
@@ -212,7 +208,7 @@ function ChatPage({ role, email, trackingCode, baseUrl = "" }) {
                     onClick={handleSendMessage}
                     disabled={sending || !newMessage.trim()}
                 >
-                    {sending ? "..." : "Gönder"}
+                    {sending ? "..." : "Send"}
                 </button>
             </div>
         </div>

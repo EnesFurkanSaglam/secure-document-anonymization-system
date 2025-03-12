@@ -29,7 +29,6 @@
     font-size: 18px;
 }
 
-/* Sync indicator animation */
 .chat-sync-indicator {
     width: 8px;
     height: 8px;
@@ -93,26 +92,26 @@
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
-/* Editor messages (ID = 1) styling */
+
 .editor-message {
     background-color: #e3f2fd;
-    /* Light blue for editor */
+
 }
 
 .editor-message.message-sent {
     background-color: #90caf9;
-    /* Darker blue when it's your message and you're editor */
+
 }
 
-/* Author messages styling */
+
 .author-message {
     background-color: #fff3e0;
-    /* Light orange/amber for author */
+
 }
 
 .author-message.message-sent {
     background-color: #ffcc80;
-    /* Darker orange when it's your message and you're author */
+
 }
 
 .message-content {
@@ -199,7 +198,6 @@
     cursor: not-allowed;
 }
 
-/* Make the chat interface responsive */
 @media (max-width: 640px) {
     .chat-container {
         width: 100%;

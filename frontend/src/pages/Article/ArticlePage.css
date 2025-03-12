@@ -1,4 +1,3 @@
-/* Main Container Styles */
 .article-page {
     background-color: #f9fafb;
     min-height: 100vh;
@@ -10,7 +9,6 @@
     margin: 0 auto;
 }
 
-/* Article Card Styles */
 .article-card {
     background-color: white;
     border-radius: 8px;
@@ -34,7 +32,6 @@
     padding: 24px;
 }
 
-/* Info Box Grid Layout */
 .info-grid {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
@@ -48,7 +45,6 @@
     }
 }
 
-/* Info Box Styles */
 .info-box {
     background-color: #f9fafb;
     padding: 16px;
@@ -68,7 +64,6 @@
     margin: 0;
 }
 
-/* Status Badge Styles */
 .status-badge {
     display: inline-block;
     padding: 4px 12px;
@@ -115,7 +110,6 @@
     border-radius: 9999px;
 }
 
-/* PDF Button Styles */
 .pdf-buttons {
     display: grid;
     grid-template-columns: 1fr;
@@ -212,7 +206,6 @@
     border-radius: 8px;
 }
 
-/* Loading State Styles */
 .loading-container {
     display: flex;
     align-items: center;
@@ -251,7 +244,6 @@
     color: #4b5563;
 }
 
-/* Error State Styles */
 .error-container {
     display: flex;
     align-items: center;
