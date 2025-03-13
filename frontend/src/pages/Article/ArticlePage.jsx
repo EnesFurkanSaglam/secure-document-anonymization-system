@@ -1,148 +1,159 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Document, Page, pdfjs } from 'react-pdf';
-import { Worker } from '@react-pdf-viewer/core';
-import '@react-pdf-viewer/core/lib/styles/index.css';
+import { useNavigate, useParams } from 'react-router-dom';
 import './ArticlePage.css';
 
 
-pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+//! Id ile mail çekme yazılıp article page de yazar id yanına mail de eklenecek ve her makale içine mesajlaşma kısmı ekleecek 
 
 function ArticlePage() {
-    const { articleId } = useParams();
     const [article, setArticle] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [activePdf, setActivePdf] = useState(null);
-    const [numPages, setNumPages] = useState(null);
-    const [pageNumber, setPageNumber] = useState(1);
+    const navigate = useNavigate();
+    const { articleId } = useParams();
 
     useEffect(() => {
-        setLoading(true);
-        fetch(`http://127.0.0.1:5000/editor/get-article-by-id?article_id=${articleId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch article');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.article) {
+        if (articleId) {
+            setLoading(true);
+            fetch(`http://127.0.0.1:5000/editor/get-article-by-id?article_id=${articleId}`)
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('There was a problem retrieving the article');
+                    }
+                    return res.json();
+                })
+                .then(data => {
                     setArticle(data.article);
-                } else {
-                    throw new Error('Article data not found');
-                }
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error fetching article:', error);
-                setError(error.message);
-                setLoading(false);
-            });
+                    setLoading(false);
+                })
+                .catch(err => {
+                    console.error('An error occurred while retrieving the article:', err);
+                    setError(err.message);
+                    setLoading(false);
+                });
+        }
     }, [articleId]);
 
-    const handleViewPdf = (pdfPath) => {
-        const filename = pdfPath.split(/[\\/]/).pop();
-        setActivePdf(`http://127.0.0.1:5000/pdf/${filename}`);
+    const handleOriginalClick = () => {
+        if (article && article.original_pdf_path) {
+            const parts = article.original_pdf_path.split(/[\\/]/);
+            const fileName = parts[parts.length - 1];
+            navigate(`/original?file=${fileName}`);
+        }
     };
 
-    const onDocumentLoadSuccess = ({ numPages }) => {
-        setNumPages(numPages);
-        setPageNumber(1);
+    const handleAnonymClick = () => {
+        if (article && article.anonymized_pdf_path) {
+            const parts = article.anonymized_pdf_path.split(/[\\/]/);
+            const fileName = parts[parts.length - 1];
+            navigate(`/anonym?file=${fileName}`);
+        } else {
+            alert("Anonymous PDF is not available.");
+        }
     };
-
-    if (loading) {
-        return (
-            <div className="loading-container">
-                <div className="loading-content">
-                    <div className="loading-spinner"></div>
-                    <p>Loading article...</p>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="error-container">
-                <div className="error-content">
-                    <h2>Error Loading Article</h2>
-                    <p>{error}</p>
-                </div>
-            </div>
-        );
-    }
 
     return (
-        <div className="article-page">
-            <div className="article-container">
-                {activePdf ? (
-                    <div className="pdf-viewer-card">
-                        <div className="pdf-header">
-                            <h2>PDF Viewer</h2>
-                            <button onClick={() => setActivePdf(null)} className="back-button">
-                                Back to Article
-                            </button>
+        <div className="article-container">
+            <h1 className="article-title">Article Information</h1>
+
+            {loading ? (
+                <div className="article-loading">
+                    <div className="article-loading-spinner"></div>
+                    <p>Loading article information...</p>
+                </div>
+            ) : error ? (
+                <div className="article-error">
+                    <p>{error}</p>
+                    <button className="article-retry-button" onClick={() => window.location.reload()}>
+                        Try again
+                    </button>
+                </div>
+            ) : article ? (
+                <div className="article-content">
+                    <div className="article-info-card">
+                        <div className="article-info-item">
+                            <span className="article-info-label">ID:</span>
+                            <span className="article-info-value">{article.id}</span>
                         </div>
-                        <div className="pdf-frame-container">
-                            <Worker>
-                                <Document
-                                    file={activePdf}
-                                    onLoadSuccess={onDocumentLoadSuccess}
-                                    className="pdf-document"
-                                >
-                                    <Page pageNumber={pageNumber} />
-                                </Document>
-                            </Worker>
-                            <div className="pdf-controls">
-                                <button disabled={pageNumber <= 1} onClick={() => setPageNumber(pageNumber - 1)}>
-                                    Previous
-                                </button>
-                                <span>Page {pageNumber} of {numPages}</span>
-                                <button disabled={pageNumber >= numPages} onClick={() => setPageNumber(pageNumber + 1)}>
-                                    Next
-                                </button>
-                            </div>
+
+                        <div className="article-info-item">
+                            <span className="article-info-label">Tracking Code:</span>
+                            <span className="article-info-value article-tracking-code">{article.tracking_code}</span>
+                        </div>
+
+                        <div className="article-info-item">
+                            <span className="article-info-label">Status:</span>
+                            <span className="article-info-value">
+                                <span className={`article-status article-status-${article.status.toLowerCase()}`}>
+                                    {article.status}
+                                </span>
+                            </span>
+                        </div>
+
+                        <div className="article-info-item">
+                            <span className="article-info-label">Keywords:</span>
+                            <span className="article-info-value">
+                                {article.keywords ? article.keywords : <span className="article-empty-value">Unspecified</span>}
+                            </span>
+                        </div>
+
+                        <div className="article-info-item">
+                            <span className="article-info-label">Author ID:</span>
+                            <span className="article-info-value">{article.author_id}</span>
+                        </div>
+
+                        <div className="article-info-item">
+                            <span className="article-info-label">Created at:</span>
+                            <span className="article-info-value">{new Date(article.created_at).toLocaleString('tr-TR')}</span>
+                        </div>
+
+                        <div className="article-info-item">
+                            <span className="article-info-label">Updated at:</span>
+                            <span className="article-info-value">{new Date(article.updated_at).toLocaleString('tr-TR')}</span>
+                        </div>
+
+                        <div className="article-info-item">
+                            <span className="article-info-label">PDF Status:</span>
+                            <span className="article-info-value">
+                                <div className="article-pdf-status">
+                                    <div className="article-pdf-status-item">
+                                        <span className="article-pdf-label">Original:</span>
+                                        <span className={`article-pdf-indicator ${article.original_pdf_path ? 'article-pdf-available' : 'article-pdf-unavailable'}`}>
+                                            {article.original_pdf_path ? 'Available' : 'Not Available'}
+                                        </span>
+                                    </div>
+                                    <div className="article-pdf-status-item">
+                                        <span className="article-pdf-label">Anonim:</span>
+                                        <span className={`article-pdf-indicator ${article.anonymized_pdf_path ? 'article-pdf-available' : 'article-pdf-unavailable'}`}>
+                                            {article.anonymized_pdf_path ? 'Available' : 'Not Available'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </span>
                         </div>
                     </div>
-                ) : (
-                    <div className="article-card">
-                        <div className="article-header">
-                            <h1>Article Details</h1>
-                        </div>
-                        <div className="article-body">
-                            <div className="info-grid">
-                                <div className="info-box">
-                                    <p className="info-label">Article ID</p>
-                                    <p className="info-value">{article.id}</p>
-                                </div>
-                                <div className="info-box">
-                                    <p className="info-label">Status</p>
-                                    <span className={`status-badge ${article.status}`}>
-                                        {article.status}
-                                    </span>
-                                </div>
-                                <div className="info-box">
-                                    <p className="info-label">Tracking Code</p>
-                                    <p className="info-value">{article.tracking_code}</p>
-                                </div>
-                            </div>
-                            <div className="pdf-buttons">
-                                {article.original_pdf_path && (
-                                    <button onClick={() => handleViewPdf(article.original_pdf_path)} className="pdf-button">
-                                        View Original PDF
-                                    </button>
-                                )}
-                                {article.anonymized_pdf_path && (
-                                    <button onClick={() => handleViewPdf(article.anonymized_pdf_path)} className="pdf-button">
-                                        View Anonymized PDF
-                                    </button>
-                                )}
-                            </div>
-                        </div>
+
+                    <div className="article-actions">
+                        <button
+                            className="article-button article-button-primary"
+                            onClick={handleOriginalClick}
+                            disabled={!article.original_pdf_path}
+                        >
+                            Show Original PDF
+                        </button>
+
+                        <button
+                            className="article-button article-button-secondary"
+                            onClick={handleAnonymClick}
+                            disabled={!article.anonymized_pdf_path}
+                        >
+                            Show Anonym PDF
+                        </button>
                     </div>
-                )}
-            </div>
+                </div>
+            ) : (
+                <p className="article-not-found">Article not found.</p>
+            )}
         </div>
     );
 }

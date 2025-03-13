@@ -1,232 +1,190 @@
-.article-page {
-    background-color: #f9fafb;
-    min-height: 100vh;
-    padding: 24px;
-}
-
 .article-container {
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    color: #333;
 }
 
-.article-card {
-    background-color: white;
+.article-title {
+    color: #2c3e50;
+    margin-bottom: 24px;
+    font-size: 28px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.article-content {
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-.article-header {
-    background-color: #2563eb;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
     padding: 24px;
 }
 
-.article-header h1 {
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
-}
-
-.article-body {
-    padding: 24px;
-}
-
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 24px;
+.article-info-card {
     margin-bottom: 24px;
 }
 
-@media (min-width: 768px) {
-    .info-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.article-info-item {
+    padding: 14px 0;
+    border-bottom: 1px solid #edf2f7;
+    display: flex;
+    align-items: flex-start;
 }
 
-.info-box {
-    background-color: #f9fafb;
-    padding: 16px;
-    border-radius: 8px;
+.article-info-item:last-child {
+    border-bottom: none;
 }
 
-.info-label {
-    color: #6b7280;
-    font-size: 14px;
-    margin-bottom: 4px;
-    margin-top: 0;
+.article-info-label {
+    font-weight: 600;
+    color: #4a5568;
+    width: 180px;
+    flex-shrink: 0;
 }
 
-.info-value {
-    font-size: 18px;
-    font-weight: 500;
-    margin: 0;
+.article-info-value {
+    color: #2d3748;
+    flex-grow: 1;
+    word-break: break-word;
 }
 
-.status-badge {
+.article-tracking-code {
+    font-family: 'Courier New', monospace;
+    background-color: #f7fafc;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    color: #3182ce;
+    letter-spacing: 0.5px;
+}
+
+.article-empty-value {
+    color: #a0aec0;
+    font-style: italic;
+}
+
+.article-status {
     display: inline-block;
     padding: 4px 12px;
-    border-radius: 9999px;
+    border-radius: 100px;
     font-size: 14px;
     font-weight: 500;
 }
 
-.status-published {
-    background-color: #d1fae5;
-    color: #065f46;
+.article-status-active,
+.article-status-approved {
+    background-color: #e6f7ee;
+    color: #0d904f;
 }
 
-.status-pending {
-    background-color: #fef3c7;
-    color: #92400e;
+.article-status-pending,
+.article-status-uploaded {
+    background-color: #fff8e6;
+    color: #b86e00;
 }
 
-.status-default {
-    background-color: #f3f4f6;
-    color: #1f2937;
+.article-status-rejected {
+    background-color: #ffebee;
+    color: #d32f2f;
 }
 
-/* Keywords Styles */
-.keywords-box {
-    background-color: #f9fafb;
-    padding: 16px;
-    border-radius: 8px;
-    margin-bottom: 24px;
+.article-status-draft {
+    background-color: #e3f2fd;
+    color: #1976d2;
 }
 
-.keywords-container {
+.article-pdf-status {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 8px;
-    margin-top: 8px;
 }
 
-.keyword-tag {
-    background-color: #dbeafe;
-    color: #1e40af;
-    font-size: 14px;
-    padding: 4px 12px;
-    border-radius: 9999px;
-}
-
-.pdf-buttons {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
-}
-
-@media (min-width: 768px) {
-    .pdf-buttons {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-.pdf-button {
+.article-pdf-status-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 16px;
-    border-radius: 8px;
+}
+
+.article-pdf-label {
+    width: 80px;
     font-weight: 500;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
 }
 
-.original-pdf {
-    background-color: #eff6ff;
-    color: #1e40af;
+.article-pdf-indicator {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
 }
 
-.original-pdf:hover {
-    background-color: #dbeafe;
+.article-pdf-available {
+    background-color: #e6f7ee;
+    color: #0d904f;
 }
 
-.anonymized-pdf {
-    background-color: #f5f3ff;
-    color: #5b21b6;
+.article-pdf-unavailable {
+    background-color: #ffebee;
+    color: #d32f2f;
 }
 
-.anonymized-pdf:hover {
-    background-color: #ede9fe;
-}
-
-.button-icon {
-    width: 24px;
-    height: 24px;
-}
-
-.pdf-viewer-card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 24px;
-    margin-bottom: 24px;
-}
-
-.pdf-header {
+.article-actions {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+    gap: 16px;
+    margin-top: 24px;
 }
 
-.pdf-header h2 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #1f2937;
-    margin: 0;
-}
-
-.back-button {
-    padding: 8px 12px;
-    background-color: #f3f4f6;
-    color: #4b5563;
-    border-radius: 6px;
-    border: none;
+.article-button {
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.back-button:hover {
-    background-color: #e5e7eb;
-}
-
-.pdf-frame-container {
-    width: 100%;
-    height: 100vh;
-}
-
-.pdf-frame {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    border-radius: 8px;
-}
-
-.loading-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: #f9fafb;
-}
-
-.loading-content {
-    padding: 24px;
+    transition: all 0.2s ease;
+    border: none;
+    flex: 1;
     text-align: center;
 }
 
-.loading-spinner {
-    width: 64px;
-    height: 64px;
-    border: 4px solid #e5e7eb;
-    border-top: 4px solid #3b82f6;
+.article-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.article-button-primary {
+    background-color: #3182ce;
+    color: white;
+}
+
+.article-button-primary:hover:not(:disabled) {
+    background-color: #2b6cb0;
+}
+
+.article-button-secondary {
+    background-color: #4a5568;
+    color: white;
+}
+
+.article-button-secondary:hover:not(:disabled) {
+    background-color: #2d3748;
+}
+
+.article-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+}
+
+.article-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #edf2f7;
+    border-top: 4px solid #3182ce;
     border-radius: 50%;
-    margin: 0 auto 16px;
     animation: spin 1s linear infinite;
+    margin-bottom: 16px;
 }
 
 @keyframes spin {
@@ -239,53 +197,52 @@
     }
 }
 
-.loading-content p {
-    font-size: 18px;
-    color: #4b5563;
-}
-
-.error-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: #f9fafb;
-}
-
-.error-content {
-    padding: 32px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
+.article-error {
     text-align: center;
+    color: #e53e3e;
+    padding: 30px;
+    border: 1px solid #fed7d7;
+    border-radius: 8px;
+    background-color: #fff5f5;
 }
 
-.error-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 64px;
-    width: 64px;
-    border-radius: 50%;
-    background-color: #fee2e2;
-    margin: 0 auto 16px;
+.article-retry-button {
+    margin-top: 16px;
+    padding: 8px 16px;
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-.error-icon .icon {
-    height: 32px;
-    width: 32px;
-    color: #ef4444;
+.article-retry-button:hover {
+    background-color: #c53030;
 }
 
-.error-content h2 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 8px;
+.article-not-found {
+    text-align: center;
+    color: #718096;
+    padding: 30px;
+    font-size: 18px;
 }
 
-.error-content p {
-    color: #6b7280;
+@media (max-width: 768px) {
+    .article-actions {
+        flex-direction: column;
+    }
+
+    .article-info-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .article-info-label {
+        margin-bottom: 6px;
+        width: 100%;
+    }
+
+    .article-pdf-status {
+        margin-top: 8px;
+    }
 }

@@ -5,8 +5,6 @@ from models import db, User, Article, Message, Log
 from config import ORIGINAL_FOLDER
 
 
-UPLOAD_FOLDER = "uploads"
-
 class AuthorService:
     @staticmethod
     def generate_tracking_code():
@@ -100,7 +98,7 @@ class AuthorService:
         unique_suffix = uuid.uuid4().hex
         filename = f"{unique_suffix}_{original_filename}"
 
-        pdf_path = os.path.join(UPLOAD_FOLDER, filename)
+        pdf_path = os.path.join(ORIGINAL_FOLDER, filename)
         pdf_file.save(pdf_path)
 
         article.original_pdf_path = pdf_path

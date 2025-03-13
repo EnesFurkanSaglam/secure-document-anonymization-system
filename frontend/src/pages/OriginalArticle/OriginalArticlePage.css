@@ -1,0 +1,115 @@
+.original-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.original-title {
+    color: #333;
+    margin-bottom: 24px;
+    font-size: 28px;
+    text-align: center;
+}
+
+.original-content {
+    display: flex;
+    gap: 20px;
+    min-height: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.original-sidebar {
+    width: 25%;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #eaeaea;
+    display: flex;
+    flex-direction: column;
+}
+
+.original-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.original-checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.original-checkbox {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.original-checkbox-text {
+    color: #444;
+}
+
+.original-anonymize-button {
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: auto;
+}
+
+.original-anonymize-button:hover {
+    background-color: #0069d9;
+}
+
+.original-anonymize-button:active {
+    background-color: #0062cc;
+}
+
+.original-pdf-container {
+    flex: 1;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.original-pdf-frame {
+    width: 100%;
+    height: 600px;
+    border: none;
+    border-radius: 4px;
+}
+
+.original-error-message {
+    text-align: center;
+    color: #dc3545;
+    padding: 20px;
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .original-content {
+        flex-direction: column;
+    }
+
+    .original-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    .original-anonymize-button {
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+}
