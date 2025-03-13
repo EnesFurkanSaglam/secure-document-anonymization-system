@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './ArticlePage.css';
-
-
-//! Id ile mail çekme yazılıp article page de yazar id yanına mail de eklenecek ve her makale içine mesajlaşma kısmı ekleecek 
+import { Link } from 'react-router-dom';
 
 function ArticlePage() {
     const [article, setArticle] = useState(null);
@@ -55,6 +53,7 @@ function ArticlePage() {
     return (
         <div className="article-container">
             <h1 className="article-title">Article Information</h1>
+
 
             {loading ? (
                 <div className="article-loading">
@@ -132,6 +131,23 @@ function ArticlePage() {
                             </span>
                         </div>
                     </div>
+
+                    <Link to="/editor-messaging" className="edp-message-btn" state={{ trackingCode: article.tracking_code }}>
+                        <svg
+                            className="edp-message-icon"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Go to Messages
+                    </Link>
 
                     <div className="article-actions">
                         <button

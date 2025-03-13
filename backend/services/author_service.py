@@ -3,6 +3,8 @@ import uuid
 from werkzeug.utils import secure_filename
 from models import db, User, Article, Message, Log
 from config import ORIGINAL_FOLDER
+from services.pdf_service import pdf_to_text,extract_keywords
+
 
 
 class AuthorService:
@@ -39,6 +41,9 @@ class AuthorService:
     
         pdf_path = os.path.join(ORIGINAL_FOLDER, filename)
         pdf_file.save(pdf_path)
+        
+        text = pdf_to_text(pdf_path=pdf_path)
+        keywords = extract_keywords(text=text)
     
         tracking_code = AuthorService.generate_tracking_code()
     
@@ -46,7 +51,8 @@ class AuthorService:
             author_id=author.id,
             tracking_code=tracking_code,
             original_pdf_path=pdf_path,
-            status="uploaded"
+            status="uploaded",
+            keywords= keywords
         )
     
         db.session.add(new_article)
@@ -100,9 +106,13 @@ class AuthorService:
 
         pdf_path = os.path.join(ORIGINAL_FOLDER, filename)
         pdf_file.save(pdf_path)
+        
+        text = pdf_to_text(pdf_path=pdf_path)
+        keywords = extract_keywords(text=text)
 
         article.original_pdf_path = pdf_path
         article.status = "reuploaded"
+        article.keywords = keywords
         db.session.commit()
 
         log = Log(article_id=article.id, user_id=author.id, action="article_reuploaded")
@@ -171,6 +181,4 @@ class AuthorService:
         
         return {"message": "Message forwarded to editor."}, 200
     
-    @staticmethod
-    def nlp_extract_keywords(pdf_path):
-        return "AI, Deep Learning"
+

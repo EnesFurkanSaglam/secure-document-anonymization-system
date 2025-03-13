@@ -12,6 +12,7 @@ import EditorPage from './pages/Editor/EditorPage';
 import ArticlePage from './pages/Article/ArticlePage';
 import OriginalArticlePage from './pages/OriginalArticle/OriginalArticlePage';
 import AnonymArticlePage from './pages/AnonymArticle/AnonymArticlePage';
+import EditorMessagingPage from './pages/EditorMessaging/EditorMessagingPage';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/reupload" element={<ReuploadPage />} />
         <Route path="/check-status" element={<CheckStatusPage />} />
         <Route path="/messaging" element={<AuthorMessagingPage />} />
+        <Route path="/editor-messaging" element={<EditorMessagingPage />} />
       </Routes>
     </Router>
   );

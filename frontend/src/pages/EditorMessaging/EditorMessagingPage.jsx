@@ -1,15 +1,18 @@
 import React from "react";
 import ChatPage from "../Chat/ChatPage";
+import { useLocation } from "react-router-dom";
 
 function EditorMessagingPage() {
-    const articleTrackingCode = "ABC123";
+    const location = useLocation();
+    const { trackingCode } = location.state || {};
 
     return (
         <div>
-            <h2>Editor Chat Page</h2>
+            <h1></h1>
+
             <ChatPage
                 role="editor"
-                trackingCode={articleTrackingCode}
+                trackingCode={trackingCode}
                 baseUrl="http://localhost:5000"
             />
         </div>

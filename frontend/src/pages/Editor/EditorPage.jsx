@@ -37,22 +37,6 @@ function EditorPage() {
         <div className="edp-container">
             <div className="edp-header">
                 <h1 className="edp-title">Articles</h1>
-                <Link to="/messages" className="edp-message-btn">
-                    <svg
-                        className="edp-message-icon"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    Go to Messages
-                </Link>
             </div>
 
             {loading ? (
