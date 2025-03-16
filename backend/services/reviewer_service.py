@@ -16,7 +16,7 @@ class ReviewerService:
         if not reviewer:
             return {"error" : "Revewer not found"}
     
-        assignments = ArticleAssignment.query.filter_by(reviewer_id=reviewer.id, active=True).all()
+        assignments = ArticleAssignment.query.filter_by(reviewer_id=reviewer.id).all()
     
         results = []
     
@@ -50,12 +50,11 @@ class ReviewerService:
         assignment = ArticleAssignment.query.filter_by(
             article_id=article.id, 
             reviewer_id=reviewer.id, 
-            active=True
         ).first()
         if not assignment:
             return {"error": "This article has not been assigned to this referee or the assignment is not active."}, 400
 
-        # 1) new_review objesini oluştur
+        
         new_review = Review(
             assignment_id=assignment.id,
             review_text=review_text,
@@ -64,21 +63,6 @@ class ReviewerService:
         db.session.add(new_review)
         db.session.commit()
 
-        # 2) Burada hakem, "anonymized_pdf_path" (article.anonymized_pdf_path) dosyasını alıp
-        # "review" notlarını PDF sonuna ekleyerek TEK PDF yapıyor olmalı.
-        # Biz bu işlemi placeholder yapalım:
-        merged_filename = f"review_{assignment.id}_{uuid.uuid4()}.pdf"
-        merged_pdf_path = os.path.join(REVIEWS_FOLDER, merged_filename)
-
-        # (placeholder) PDF birleştirme:
-        # merge_pdf_files(article.anonymized_pdf_path, reviewer's comments => merged_pdf_path)
-        # Şimdilik gerçek kodu geçiyoruz.
-
-        # 3) new_review.review_pdf_path'i güncelle
-        new_review.review_pdf_path = merged_pdf_path
-        db.session.commit()
-
-        # 4) Log kaydı
         new_log = Log(
             article_id=article.id,
             user_id=reviewer.id,
@@ -86,12 +70,14 @@ class ReviewerService:
         )
         db.session.add(new_log)
         db.session.commit()
+        
+        #Burda birleştirme fonksiyonu olmalı ve mergelemiş hali farklı bir yere kaydedilmeli
 
         return {
             "message": "Review saved",
             "review_id": new_review.id,
             "is_final": is_final,
-            "review_pdf_path": merged_pdf_path 
+            "review_pdf_path": "null şimdilik" 
         }, 200
     
     @staticmethod    
@@ -103,7 +89,9 @@ class ReviewerService:
                 "id": rev.id,
                 "email": rev.email,
                 "created_at": rev.created_at.isoformat() if rev.created_at else None,
-                "updated_at": rev.updated_at.isoformat() if rev.updated_at else None
+                "updated_at": rev.updated_at.isoformat() if rev.updated_at else None,
+                "role" : rev.role,
+                "interests" : rev.interests
             })
 
         return {"reviewers": results}, 200

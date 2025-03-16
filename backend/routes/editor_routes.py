@@ -48,15 +48,15 @@ def send_message_as_editor():
     return jsonify(data), code
 
 
-#!not tested
-@editor_bp.route("/auto-assign-article", methods=["POST"])
-def auto_assign_article():
+# #!not tested
+# @editor_bp.route("/auto-assign-article", methods=["POST"])
+# def auto_assign_article():
 
-    body = request.json or {}
-    tracking_code = body.get("tracking_code", "").strip()
+#     body = request.json or {}
+#     tracking_code = body.get("tracking_code", "").strip()
 
-    data, code = editor_service.auto_assign_article_service(tracking_code)
-    return jsonify(data), code
+#     data, code = editor_service.auto_assign_article_service(tracking_code)
+#     return jsonify(data), code
 
 
 

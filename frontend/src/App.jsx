@@ -13,6 +13,7 @@ import ArticlePage from './pages/Article/ArticlePage';
 import OriginalArticlePage from './pages/OriginalArticle/OriginalArticlePage';
 import AnonymArticlePage from './pages/AnonymArticle/AnonymArticlePage';
 import EditorMessagingPage from './pages/EditorMessaging/EditorMessagingPage';
+import ReviwerByEmailPage from './pages/ReviwerByEmail/ReviwerByEmailPage';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/check-status" element={<CheckStatusPage />} />
         <Route path="/messaging" element={<AuthorMessagingPage />} />
         <Route path="/editor-messaging" element={<EditorMessagingPage />} />
+        <Route path="/reviewer/:email" element={<ReviwerByEmailPage />} />
       </Routes>
     </Router>
   );

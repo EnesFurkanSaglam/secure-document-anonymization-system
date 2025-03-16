@@ -104,46 +104,46 @@ class EditorService:
     
     
 
-    @staticmethod
-    def auto_assign_article_service(tracking_code):
+    # # @staticmethod
+    # # def auto_assign_article_service(tracking_code):
 
-        article = Article.query.filter_by(tracking_code=tracking_code).first()
-        if not article:
-            return {"error": "Article not found"}, 404
+    # #     article = Article.query.filter_by(tracking_code=tracking_code).first()
+    # #     if not article:
+    # #         return {"error": "Article not found"}, 404
 
-            if article.status == "assigned":
-                return {"error": "Article already assigned."}, 400
-
-    
-        # article_keywords = parse_to_set(article.keywords)
-        # if not article_keywords:
-        #     return {"error": "Makale için anahtar kelime yok."}, 400
+    # #         if article.status == "assigned":
+    # #             return {"error": "Article already assigned."}, 400
 
     
-        reviewers = User.query.filter_by(role="reviewer").all()
-
-        suitable_reviewer = None
-        # for rev in reviewers:
-        #     rev_interests = parse_to_set(rev.interests)
-        #     if article_keywords & rev_interests:  # Kesişim boş değilse
-        #         suitable_reviewer = rev
-        #         break
-
-        if not suitable_reviewer:
-            return {"error": "No suitable referee found (no intersection)."}, 400
+    #     # article_keywords = parse_to_set(article.keywords)
+    #     # if not article_keywords:
+    #     #     return {"error": "Makale için anahtar kelime yok."}, 400
 
     
-        new_assignment = ArticleAssignment(article_id=article.id, reviewer_id=suitable_reviewer.id)
-        db.session.add(new_assignment)
+    #     reviewers = User.query.filter_by(role="reviewer").all()
 
-        article.status = "assigned"
-        db.session.commit()
+    #     suitable_reviewer = None
+    #     # for rev in reviewers:
+    #     #     rev_interests = parse_to_set(rev.interests)
+    #     #     if article_keywords & rev_interests:  # Kesişim boş değilse
+    #     #         suitable_reviewer = rev
+    #     #         break
 
-        log = Log(article_id=article.id, user_id=suitable_reviewer.id, action="article_assigned_auto")
-        db.session.add(log)
-        db.session.commit()
+    #     if not suitable_reviewer:
+    #         return {"error": "No suitable referee found (no intersection)."}, 400
 
-        return {"message": f"Article {suitable_reviewer.email} assigned."}, 200
+    
+    #     new_assignment = ArticleAssignment(article_id=article.id, reviewer_id=suitable_reviewer.id)
+    #     db.session.add(new_assignment)
+
+    #     article.status = "assigned"
+    #     db.session.commit()
+
+    #     log = Log(article_id=article.id, user_id=suitable_reviewer.id, action="article_assigned_auto")
+    #     db.session.add(log)
+    #     db.session.commit()
+
+    #     return {"message": f"Article {suitable_reviewer.email} assigned."}, 200
 
     @staticmethod
     def list_article_reviews_service(tracking_code):
