@@ -7,14 +7,37 @@ function OriginalArticlePage() {
     const queryParams = new URLSearchParams(location.search);
     const fileName = queryParams.get('file');
     const pdfUrl = fileName ? `http://127.0.0.1:5000/pdf/${fileName}` : null;
+    const articleId = location.state?.articleId;
 
-    const handleAnonymize = () => {
+    const handleAnonymize = async () => {
         console.log("anonym click");
+        try {
+            const response = await fetch("http://127.0.0.1:5000/editor/anonymize-article", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ article_id: articleId })
+            });
+
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+
+            const data = await response.json();
+            console.log("Success:", data);
+            alert("Success");
+        } catch (error) {
+            console.error("Error in anonymization:", error);
+            alert("An error occurred");
+        }
     };
+
+
 
     return (
         <div className="original-container">
-            <h1 className="original-title">Orijinal PDF</h1>
+            <h1 className="original-title">Original PDF</h1>
 
             {pdfUrl ? (
                 <div className="original-content">
@@ -35,7 +58,7 @@ function OriginalArticlePage() {
                             className="original-anonymize-button"
                             onClick={handleAnonymize}
                         >
-                            Anonymize
+                            Anonymize and Assign
                         </button>
                     </div>
 

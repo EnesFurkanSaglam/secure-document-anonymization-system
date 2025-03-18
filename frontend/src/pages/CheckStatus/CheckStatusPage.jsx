@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './CheckStatusPage.css'; // Import the CSS file
+import './CheckStatusPage.css';
 
 function CheckStatusPage() {
     const [email, setEmail] = useState('');
@@ -34,6 +34,10 @@ function CheckStatusPage() {
         } finally {
             setLoading(false);
         }
+    };
+
+    const getFileName = (path) => {
+        return path.split(/[\/\\]/).pop();
     };
 
     return (
@@ -89,6 +93,18 @@ function CheckStatusPage() {
                     <p className="csp-result-item">
                         <strong>Message:</strong> {result.message}
                     </p>
+
+                    {result.path && (
+                        <div className="csp-pdf">
+                            <iframe
+                                src={`http://127.0.0.1:5000/pdf/rewiev/${getFileName(result.path)}`}
+                                title="Review PDF"
+                                frameBorder="0"
+                                width="100%"
+                                height="600px"
+                            ></iframe>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

@@ -1,8 +1,9 @@
 from datetime import datetime
 from models import db,User,Article,ArticleAssignment,Review,Log
-from config import REVIEWS_FOLDER
+from config import PUBLISHED_FOLDER
 import os
-import uuid
+from services.pdf_service import PdfService
+import shutil
 
 class ReviewerService:
     
@@ -46,6 +47,10 @@ class ReviewerService:
         article = Article.query.filter_by(tracking_code=tracking_code).first()
         if not article:
             return {"error": "Article not found."}, 404
+        
+        article.status = "reviewed_and_send_back"
+        db.session.add(article)
+        db.session.commit()
 
         assignment = ArticleAssignment.query.filter_by(
             article_id=article.id, 
@@ -71,8 +76,8 @@ class ReviewerService:
         db.session.add(new_log)
         db.session.commit()
         
-        #Burda birleştirme fonksiyonu olmalı ve mergelemiş hali farklı bir yere kaydedilmeli
-
+        PdfService.merge_and_save_pdf(review_text,article)
+        
         return {
             "message": "Review saved",
             "review_id": new_review.id,
@@ -94,4 +99,43 @@ class ReviewerService:
                 "interests" : rev.interests
             })
 
-        return {"reviewers": results}, 200
+        return {"reviewers": results}, 200,
+    
+    @staticmethod
+    def publish_article_service(article_id, reviewer_id=None):
+   
+        article = Article.query.get(article_id)
+        if not article:
+            return {"error": "Article not found."}, 404
+
+        
+        if not article.original_pdf_path or not os.path.exists(article.original_pdf_path):
+            return {"error": "Review PDF not found or missing. Can't publish."}, 400
+
+      
+
+       
+        base_filename = os.path.basename(article.original_pdf_path)
+        published_path = os.path.join(PUBLISHED_FOLDER, base_filename)
+
+       
+        shutil.copy(article.original_pdf_path, published_path)
+
+    
+        article.published_pdf_path = published_path
+        article.status = "published"
+        db.session.commit()
+
+      
+        new_log = Log(
+            article_id=article.id,
+            user_id=reviewer_id, 
+            action="article_published"
+        )
+        db.session.add(new_log)
+        db.session.commit()
+
+        return {
+            "message": "Article has been published successfully.",
+            "published_pdf_path": published_path
+        }, 200

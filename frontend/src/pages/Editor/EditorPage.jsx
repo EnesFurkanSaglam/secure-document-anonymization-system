@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './EditorPage.css';
 
-
-
 function EditorPage() {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showLogs, setShowLogs] = useState(false);
+    const [logs, setLogs] = useState([]);
+    const [logsLoading, setLogsLoading] = useState(false);
+    const [logsError, setLogsError] = useState(null);
 
     useEffect(() => {
-
         setLoading(true);
         fetch('http://127.0.0.1:5000/editor/list-articles')
             .then(response => {
@@ -20,7 +21,6 @@ function EditorPage() {
                 return response.json();
             })
             .then(data => {
-
                 if (data.articles) {
                     setArticles(data.articles);
                 }
@@ -33,11 +33,82 @@ function EditorPage() {
             });
     }, []);
 
+    const fetchLogs = () => {
+        setLogsLoading(true);
+        fetch('http://127.0.0.1:5000/editor/view-logs')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch logs');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.logs) {
+                    setLogs(data.logs);
+                }
+                setLogsLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching logs:', error);
+                setLogsError(error.message);
+                setLogsLoading(false);
+            });
+    };
+
+    const toggleLogs = () => {
+        if (!showLogs && logs.length === 0) {
+            fetchLogs();
+        }
+        setShowLogs(!showLogs);
+    };
+
     return (
         <div className="edp-container">
             <div className="edp-header">
                 <h1 className="edp-title">Articles</h1>
+                <button
+                    onClick={toggleLogs}
+                    className="edp-logs-button"
+                >
+                    {showLogs ? 'Hide Logs' : 'Show Logs'}
+                </button>
             </div>
+
+            {showLogs && (
+                <div className="edp-logs-container">
+                    {logsLoading ? (
+                        <div className="edp-logs-loading">Loading logs...</div>
+                    ) : logsError ? (
+                        <div className="edp-logs-error">Error: {logsError}</div>
+                    ) : (
+                        <div className="edp-logs-content">
+                            <h2 className="edp-logs-title">System Logs</h2>
+                            <table className="edp-logs-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Action</th>
+                                        <th>Article ID</th>
+                                        <th>User ID</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {logs.map(log => (
+                                        <tr key={log.id}>
+                                            <td>{log.id}</td>
+                                            <td>{log.action}</td>
+                                            <td>{log.article_id}</td>
+                                            <td>{log.user_id}</td>
+                                            <td>{new Date(log.timestamp).toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            )}
 
             {loading ? (
                 <div className="edp-empty-state">Loading articles...</div>

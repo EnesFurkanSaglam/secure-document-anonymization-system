@@ -3,9 +3,7 @@ import uuid
 from werkzeug.utils import secure_filename
 from models import db, User, Article, Message, Log
 from config import ORIGINAL_FOLDER
-from services.pdf_service import pdf_to_text,extract_keywords
-
-
+from services.pdf_service import PdfService
 
 class AuthorService:
     @staticmethod
@@ -42,8 +40,9 @@ class AuthorService:
         pdf_path = os.path.join(ORIGINAL_FOLDER, filename)
         pdf_file.save(pdf_path)
         
-        text = pdf_to_text(pdf_path=pdf_path)
-        keywords = extract_keywords(text=text)
+        #!
+        text = PdfService.pdf_to_text(pdf_path=pdf_path)
+        keywords = PdfService.extract_keywords(text=text)
     
         tracking_code = AuthorService.generate_tracking_code()
     
@@ -78,7 +77,7 @@ class AuthorService:
         if not article:
             return {"error": "The article was not found or does not belong to you."}, 404
         
-        return {"tracking_code": article.tracking_code, "status": article.status, "message": "Current status: " + article.status}, 200
+        return {"tracking_code": article.tracking_code, "status": article.status, "message": "Current status: " + article.status,"path":article.review_pdf_path}, 200
 
 
 
@@ -107,8 +106,9 @@ class AuthorService:
         pdf_path = os.path.join(ORIGINAL_FOLDER, filename)
         pdf_file.save(pdf_path)
         
-        text = pdf_to_text(pdf_path=pdf_path)
-        keywords = extract_keywords(text=text)
+        #!
+        text = PdfService.pdf_to_text(pdf_path=pdf_path)
+        keywords = PdfService.extract_keywords(text=text)
 
         article.original_pdf_path = pdf_path
         article.status = "reuploaded"
@@ -180,5 +180,20 @@ class AuthorService:
         db.session.commit()
         
         return {"message": "Message forwarded to editor."}, 200
+    
+    
+    @staticmethod
+    def list_all_published_articles_service():
+        articles = Article.query.filter_by(status='published').all()
+    
+        results = []
+        for art in articles:
+            results.append({
+                "id": art.id,
+                "keywords": art.keywords,
+                "published_pdf_path" : art.published_pdf_path
+            })
+    
+        return {"published_articles": results}, 200
     
 

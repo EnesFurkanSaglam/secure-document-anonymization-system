@@ -1,4 +1,3 @@
-/* EditorPage.css */
 .edp-container {
     max-width: 1200px;
     margin: 40px auto;
@@ -18,6 +17,79 @@
     font-size: 28px;
     font-weight: 600;
     margin: 0;
+}
+
+.edp-logs-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edp-logs-button:hover {
+    background-color: #2980b9;
+}
+
+.edp-logs-container {
+    margin-bottom: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.edp-logs-title {
+    font-size: 18px;
+    margin: 0;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+    color: #334155;
+}
+
+.edp-logs-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.edp-logs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.edp-logs-table th,
+.edp-logs-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.edp-logs-table th {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+}
+
+.edp-logs-table tr:hover {
+    background-color: #f8fafc;
+}
+
+.edp-logs-loading,
+.edp-logs-error {
+    padding: 30px;
+    text-align: center;
+    color: #64748b;
+}
+
+.edp-logs-error {
+    color: #ef4444;
 }
 
 .edp-empty-state {
@@ -130,5 +202,14 @@
 @media (max-width: 480px) {
     .edp-article-grid {
         grid-template-columns: 1fr;
+    }
+
+    .edp-logs-table {
+        font-size: 12px;
+    }
+
+    .edp-logs-table th,
+    .edp-logs-table td {
+        padding: 8px 10px;
     }
 }

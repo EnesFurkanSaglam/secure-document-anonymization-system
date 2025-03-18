@@ -12,11 +12,12 @@ class Article(db.Model):
 
     original_pdf_path = db.Column(db.String(255), nullable=True)
     anonymized_pdf_path = db.Column(db.String(255), nullable=True)
+    published_pdf_path = db.Column(db.String(255), nullable=True)
+    review_pdf_path = db.Column(db.String(255), nullable=True)
     status = db.Column(db.String(50), default="uploaded")  # "uploaded", "assigned", ...
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    # Makalenin yazarı
     author = db.relationship("User", backref="articles", lazy=True)
 
     def __repr__(self):

@@ -16,6 +16,9 @@ const HomePage = () => {
             case 'reviewer':
                 navigate('/reviewer');
                 break;
+            case 'published':
+                navigate('/published');
+                break;
             default:
                 break;
         }
@@ -45,6 +48,12 @@ const HomePage = () => {
                     onClick={() => handleRoleClick('reviewer')}
                 >
                     Reviewer
+                </button>
+                <button
+                    className="home-button home-button-reviewer"
+                    onClick={() => handleRoleClick('published')}
+                >
+                    Published Article
                 </button>
             </div>
         </div>

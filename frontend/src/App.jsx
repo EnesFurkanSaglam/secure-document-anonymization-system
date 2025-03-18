@@ -14,6 +14,7 @@ import OriginalArticlePage from './pages/OriginalArticle/OriginalArticlePage';
 import AnonymArticlePage from './pages/AnonymArticle/AnonymArticlePage';
 import EditorMessagingPage from './pages/EditorMessaging/EditorMessagingPage';
 import ReviwerByEmailPage from './pages/ReviwerByEmail/ReviwerByEmailPage';
+import PublishedArticlePage from './pages/PublishedArticle/PublishedArticlePage';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/messaging" element={<AuthorMessagingPage />} />
         <Route path="/editor-messaging" element={<EditorMessagingPage />} />
         <Route path="/reviewer/:email" element={<ReviwerByEmailPage />} />
+        <Route path="/published" element={<PublishedArticlePage />} />
       </Routes>
     </Router>
   );

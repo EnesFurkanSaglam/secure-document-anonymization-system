@@ -14,20 +14,6 @@ function AnonymArticlePage() {
 
             {pdfUrl ? (
                 <div className="anonym-content">
-                    <div className="anonym-sidebar">
-                        <div className="anonym-checkbox-group">
-                            <label className="anonym-checkbox-label">
-                                <input type="checkbox" className="anonym-checkbox" />
-                                <span className="anonym-checkbox-text">Example</span>
-                            </label>
-
-                            <label className="anonym-checkbox-label">
-                                <input type="checkbox" className="anonym-checkbox" />
-                                <span className="anonym-checkbox-text">Example</span>
-                            </label>
-                        </div>
-                    </div>
-
                     <div className="anonym-pdf-container">
                         <iframe
                             src={pdfUrl}

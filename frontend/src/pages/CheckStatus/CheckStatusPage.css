@@ -1,5 +1,5 @@
 .csp-container {
-    max-width: 600px;
+    max-width: 800px;
     margin: 40px auto;
     padding: 30px;
     border-radius: 12px;
@@ -12,7 +12,7 @@
     color: #2c3e50;
     text-align: center;
     margin-bottom: 30px;
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 600;
 }
 
@@ -29,23 +29,25 @@
 }
 
 .csp-label {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
     color: #4a5568;
 }
 
 .csp-input {
-    padding: 12px 16px;
+    padding: 14px 16px;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     font-size: 16px;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    transition: all 0.3s ease;
+    background-color: #f8fafc;
 }
 
 .csp-input:focus {
     border-color: #3182ce;
     box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
     outline: none;
+    background-color: #fff;
 }
 
 .csp-button {
@@ -58,50 +60,116 @@
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(49, 130, 206, 0.1);
 }
 
 .csp-button:hover {
     background-color: #2c5282;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px rgba(44, 82, 130, 0.15);
 }
 
 .csp-button:disabled {
     background-color: #a0aec0;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .csp-error {
     margin-top: 20px;
-    padding: 12px 16px;
+    padding: 14px 16px;
     background-color: #fed7d7;
     color: #c53030;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 15px;
+    border-left: 4px solid #c53030;
 }
 
 .csp-result {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #e6f7ff;
-    border-radius: 8px;
+    margin-top: 25px;
+    padding: 25px;
+    background-color: #f0f9ff;
+    border-radius: 10px;
     border-left: 4px solid #3182ce;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .csp-result-item {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.csp-result-item strong {
+    color: #2c5282;
 }
 
 .csp-result-item:last-child {
     margin-bottom: 0;
 }
 
-@media (max-width: 640px) {
+.csp-pdf {
+    margin-top: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: #f8fafc;
+    padding: 10px;
+    position: relative;
+}
+
+.csp-pdf iframe {
+    width: 100%;
+    height: 700px;
+    border-radius: 6px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.csp-pdf::before {
+    content: "PDF Document";
+    display: block;
+    background-color: #e2e8f0;
+    padding: 10px 15px;
+    font-weight: 500;
+    color: #4a5568;
+    border-radius: 6px 6px 0 0;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
     .csp-container {
         padding: 20px;
-        margin: 20px auto;
+        margin: 20px 15px;
+        max-width: none;
+    }
+
+    .csp-title {
+        font-size: 24px;
+    }
+
+    .csp-pdf iframe {
+        height: 500px;
+    }
+}
+
+@media (max-width: 480px) {
+    .csp-container {
+        padding: 15px;
     }
 
     .csp-title {
         font-size: 22px;
+    }
+
+    .csp-pdf iframe {
+        height: 400px;
+    }
+
+    .csp-input,
+    .csp-button {
+        padding: 12px 14px;
     }
 }

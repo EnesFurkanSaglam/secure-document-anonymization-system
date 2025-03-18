@@ -1,5 +1,5 @@
 from flask import Blueprint,request,jsonify
-from services import editor_service
+from services import editor_service,pdf_service
 
 editor_bp = Blueprint("editor_bp",__name__)
 
@@ -48,33 +48,11 @@ def send_message_as_editor():
     return jsonify(data), code
 
 
-# #!not tested
-# @editor_bp.route("/auto-assign-article", methods=["POST"])
-# def auto_assign_article():
+@editor_bp.route("/anonymize-article", methods=["POST"])
+def anonymize_and_assign_article():
 
-#     body = request.json or {}
-#     tracking_code = body.get("tracking_code", "").strip()
+    body = request.json or {}
+    article_id = str(body.get("article_id", "")).strip()
 
-#     data, code = editor_service.auto_assign_article_service(tracking_code)
-#     return jsonify(data), code
-
-
-
-# @editor_bp.route("/anonymize-article", methods=["POST"])
-# def anonymize_article():
-
-#     body = request.json or {}
-#     tracking_code = body.get("tracking_code", "").strip()
-
-#     data, code = editor_service.anonymize_article_service(tracking_code)
-#     return jsonify(data), code
-
-
-# @editor_bp.route("/revert-anonymized", methods=["POST"])
-# def revert_anonymized():
-
-#     body = request.json or {}
-#     tracking_code = body.get("tracking_code", "").strip()
-
-#     data, code = revert_anonymized_sections_service(tracking_code)
-#     return jsonify(data), code
+    data, code = pdf_service.anonymize_and_assign(article_id)
+    return jsonify(data), code

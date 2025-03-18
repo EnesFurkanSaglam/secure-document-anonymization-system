@@ -64,13 +64,43 @@ function ReviewerByEmailPage() {
             })
             .then(data => {
                 alert("Notes saved successfully!");
-                // Update state or UI if needed.
+
             })
             .catch(error => {
                 console.error("Error saving notes:", error);
                 alert("Failed to save notes!");
             });
     };
+
+    const pusblished = () => {
+        if (!selectedArticle) {
+            alert("No article selected!");
+            return;
+        }
+
+        fetch('http://127.0.0.1:5000/reviewer/publish-article', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ article_id: selectedArticle.article_id })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert("Article published successfully!");
+                handleCloseModal();
+            })
+            .catch(error => {
+                console.error("Error publishing article:", error);
+                alert("Failed to publish article!");
+            });
+    };
+
 
     const getStatusClass = (status) => {
         if (status.toLowerCase().includes('pending')) return 'status-pending';
@@ -136,17 +166,11 @@ function ReviewerByEmailPage() {
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
                                 />
-                                <div className="final-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        id="isFinal"
-                                        checked={isFinal}
-                                        onChange={(e) => setIsFinal(e.target.checked)}
-                                    />
-                                    <label htmlFor="isFinal">Mark as Final</label>
-                                </div>
                                 <button className="save-notes-btn" onClick={handleSaveNotes}>
-                                    Save Notes
+                                    Save Notes and send back the author
+                                </button>
+                                <button className="save-notes-btn" onClick={pusblished}>
+                                    Publish
                                 </button>
                             </div>
                         </div>

@@ -98,7 +98,6 @@
     width: 90%;
     max-width: 1200px;
     height: 90vh;
-    /* Yükseklik artırıldı */
     border-radius: 8px;
     overflow: hidden;
     display: flex;
@@ -136,7 +135,6 @@
 
 .pdf-viewer {
     flex: 3;
-    /* PDF görünüm alanı genişletildi */
     border: none;
     width: 100%;
 }

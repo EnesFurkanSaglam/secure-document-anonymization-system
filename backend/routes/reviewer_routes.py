@@ -24,3 +24,14 @@ def submit_review():
 def list_all_reviewers():
     data, status = reviewer_service.list_all_reviewers_service()
     return jsonify(data), status
+
+@reviewer_bp.route("/publish-article", methods=["POST"])
+def route_publish_article():
+    data = request.json or {}
+    if "article_id" not in data:
+        return jsonify({"error": "article_id is required"}), 400
+    
+    article_id = data["article_id"]
+    
+    result, status_code = reviewer_service.publish_article_service(article_id=article_id,)
+    return jsonify(result), status_code

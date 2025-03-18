@@ -51,3 +51,9 @@ def send_message():
     return jsonify(data),status
 
 
+@author_bp.route("/published",methods=["GET"])
+def show_published_article():
+    data, status_code = author_service.list_all_published_articles_service()
+    return jsonify(data), status_code
+    
+

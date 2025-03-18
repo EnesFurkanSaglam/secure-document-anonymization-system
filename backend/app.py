@@ -3,7 +3,7 @@ from flask import Flask, send_from_directory, abort
 from models import db
 from routes import author_bp, editor_bp, reviewer_bp
 from flask_cors import CORS
-from config import ORIGINAL_FOLDER,ANONYMIZED_FOLDER
+from config import ORIGINAL_FOLDER,ANONYMIZED_FOLDER,REVIEWS_FOLDER,PUBLISHED_FOLDER
 
 
 def create_app():
@@ -36,6 +36,22 @@ def create_app():
         file_path = os.path.join(ANONYMIZED_FOLDER, filename)
         if os.path.exists(file_path):
             return send_from_directory(ANONYMIZED_FOLDER, filename)
+        else:
+            abort(404)
+            
+    @app.route('/pdf/rewiev/<path:filename>')
+    def serve_rewiev_pdf(filename):
+        file_path = os.path.join(REVIEWS_FOLDER, filename)
+        if os.path.exists(file_path):
+            return send_from_directory(REVIEWS_FOLDER, filename)
+        else:
+            abort(404)
+    
+    @app.route('/pdf/publish/<path:filename>')
+    def serve_publish_pdf(filename):
+        file_path = os.path.join(PUBLISHED_FOLDER, filename)
+        if os.path.exists(file_path):
+            return send_from_directory(PUBLISHED_FOLDER, filename)
         else:
             abort(404)
     
