@@ -94,7 +94,7 @@ function CheckStatusPage() {
                         <strong>Message:</strong> {result.message}
                     </p>
 
-                    {result.path && (
+                    {result.path && result.status === "reviewed_and_send_back" && (
                         <div className="csp-pdf">
                             <iframe
                                 src={`http://127.0.0.1:5000/pdf/rewiev/${getFileName(result.path)}`}

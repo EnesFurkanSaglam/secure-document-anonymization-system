@@ -18,7 +18,10 @@ function ReviewerByEmailPage() {
             .then(response => response.json())
             .then(data => {
                 if (data && data.assigned_articles) {
-                    setAssignedArticles(data.assigned_articles);
+                    const uniqueArticles = data.assigned_articles.filter((article, index, self) =>
+                        index === self.findLastIndex(a => a.article_id === article.article_id)
+                    );
+                    setAssignedArticles(uniqueArticles);
                 }
                 setLoading(false);
             })
@@ -28,6 +31,7 @@ function ReviewerByEmailPage() {
                 setLoading(false);
             });
     }, [email]);
+
 
     const handleArticleClick = (article) => {
         setSelectedArticle(article);
