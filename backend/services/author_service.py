@@ -1,9 +1,10 @@
-import os 
+import os
 import uuid
 from werkzeug.utils import secure_filename
 from models import db, User, Article, Message, Log
 from config import ORIGINAL_FOLDER
 from services.pdf_service import PdfService
+from services.encryption_service import EncryptionService
 
 class AuthorService:
     @staticmethod
@@ -13,12 +14,10 @@ class AuthorService:
     @staticmethod
     def get_or_create_author_by_email(email):
         author = User.query.filter_by(email=email, role="author").first()
-        
         if not author:
             author = User(email=email, role="author")
             db.session.add(author)
             db.session.commit()
-        
         return author
 
     @staticmethod
@@ -28,41 +27,42 @@ class AuthorService:
     
         if not pdf_file or pdf_file.filename == "":
             return {"error": "PDF file could not be loaded or invalid file name"}, 400
-    
+
         author = AuthorService.get_or_create_author_by_email(email)
-    
-        
+
         original_filename = secure_filename(pdf_file.filename)
-        
         unique_suffix = uuid.uuid4().hex
         filename = f"{unique_suffix}_{original_filename}"
-    
         pdf_path = os.path.join(ORIGINAL_FOLDER, filename)
-        pdf_file.save(pdf_path)
+
         
-        #!
+        file_data = pdf_file.read()
+        
+        encrypted_data = EncryptionService.encrypt_data(file_data)
+        
+        with open(pdf_path, "wb") as f:
+            f.write(encrypted_data)
+
+        
         text = PdfService.pdf_to_text(pdf_path=pdf_path)
         keywords = PdfService.extract_keywords(text=text)
-    
+
         tracking_code = AuthorService.generate_tracking_code()
-    
         new_article = Article(
             author_id=author.id,
             tracking_code=tracking_code,
             original_pdf_path=pdf_path,
             status="uploaded",
-            keywords= keywords
+            keywords=keywords
         )
-    
         db.session.add(new_article)
         db.session.commit()
-    
+
         log = Log(article_id=new_article.id, user_id=author.id, action="article_uploaded")
         db.session.add(log)
         db.session.commit()
-    
+
         return {"message": "Article uploaded successfully", "tracking_code": tracking_code}, 200
-    
     
     @staticmethod
     def check_status_service(email, tracking_code):
@@ -77,9 +77,12 @@ class AuthorService:
         if not article:
             return {"error": "The article was not found or does not belong to you."}, 404
         
-        return {"tracking_code": article.tracking_code, "status": article.status, "message": "Current status: " + article.status,"path":article.review_pdf_path}, 200
-
-
+        return {
+            "tracking_code": article.tracking_code,
+            "status": article.status,
+            "message": "Current status: " + article.status,
+            "path": article.review_pdf_path
+        }, 200
 
     @staticmethod
     def reupload_article_service(email, tracking_code, pdf_file):
@@ -97,16 +100,18 @@ class AuthorService:
         if not article:
             return {"error": "The article was not found or does not belong to you."}, 404
 
-    
         original_filename = secure_filename(pdf_file.filename)
-    
         unique_suffix = uuid.uuid4().hex
         filename = f"{unique_suffix}_{original_filename}"
-
         pdf_path = os.path.join(ORIGINAL_FOLDER, filename)
-        pdf_file.save(pdf_path)
+
         
-        #!
+        file_data = pdf_file.read()
+        enc_data = EncryptionService.encrypt_data(file_data)
+        with open(pdf_path, "wb") as f:
+            f.write(enc_data)
+
+        
         text = PdfService.pdf_to_text(pdf_path=pdf_path)
         keywords = PdfService.extract_keywords(text=text)
 
@@ -121,13 +126,11 @@ class AuthorService:
 
         return {"message": "Article updated (revision uploaded).", "new_path": pdf_path}, 200
 
-
     @staticmethod
-    def list_conversation_service(email,tracking_code):
-        
-        author = User.query.filter_by(email=email,role="author").first()
+    def list_conversation_service(email, tracking_code):
+        author = User.query.filter_by(email=email, role="author").first()
         if not author:
-            return{"error" : "Author not found"},404
+            return {"error": "Author not found"}, 404
         
         article = Article.query.filter_by(tracking_code=tracking_code, author_id=author.id).first()
         if not article:
@@ -146,8 +149,7 @@ class AuthorService:
             })
 
         return {"conversation": conversation}, 200
-        
-                  
+
     @staticmethod
     def send_message_service(email, tracking_code, content):
         if not email or not tracking_code or not content:
@@ -171,7 +173,6 @@ class AuthorService:
             article_id=article.id,
             content=content
         )
-        
         db.session.add(msg)
         db.session.commit()
         
@@ -180,20 +181,15 @@ class AuthorService:
         db.session.commit()
         
         return {"message": "Message forwarded to editor."}, 200
-    
-    
+
     @staticmethod
     def list_all_published_articles_service():
         articles = Article.query.filter_by(status='published').all()
-    
         results = []
         for art in articles:
             results.append({
                 "id": art.id,
                 "keywords": art.keywords,
-                "published_pdf_path" : art.published_pdf_path
+                "published_pdf_path": art.published_pdf_path
             })
-    
         return {"published_articles": results}, 200
-    
-

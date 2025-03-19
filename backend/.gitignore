@@ -1,3 +1,5 @@
 uploads/
 database/
 **/__pycache__/
+.env
+

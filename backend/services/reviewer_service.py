@@ -1,29 +1,27 @@
 from datetime import datetime
-from models import db,User,Article,ArticleAssignment,Review,Log
+from models import db, User, Article, ArticleAssignment, Review, Log
 from config import PUBLISHED_FOLDER
 import os
-from services.pdf_service import PdfService
 import shutil
+from services.pdf_service import PdfService
+from services.encryption_service import EncryptionService
 
 class ReviewerService:
-    
+
     @staticmethod
     def list_assigned_articles_service(email):
         if not email or "@" not in email:
             return {"error" : "Invalid email address"}
-        
+
         reviewer = User.query.filter_by(email=email, role="reviewer").first()
-    
         if not reviewer:
             return {"error" : "Revewer not found"}
-    
+
         assignments = ArticleAssignment.query.filter_by(reviewer_id=reviewer.id).all()
-    
         results = []
-    
+
         for assign in assignments:
             article = assign.article
-        
             results.append({
                 "assignment_id": assign.id,
                 "article_id": article.id,
@@ -47,19 +45,18 @@ class ReviewerService:
         article = Article.query.filter_by(tracking_code=tracking_code).first()
         if not article:
             return {"error": "Article not found."}, 404
-        
+
         article.status = "reviewed_and_send_back"
         db.session.add(article)
         db.session.commit()
 
         assignment = ArticleAssignment.query.filter_by(
-            article_id=article.id, 
-            reviewer_id=reviewer.id, 
+            article_id=article.id,
+            reviewer_id=reviewer.id
         ).first()
         if not assignment:
             return {"error": "This article has not been assigned to this referee or the assignment is not active."}, 400
 
-        
         new_review = Review(
             assignment_id=assignment.id,
             review_text=review_text,
@@ -75,17 +72,17 @@ class ReviewerService:
         )
         db.session.add(new_log)
         db.session.commit()
-        
-        PdfService.merge_and_save_pdf(review_text,article)
-        
+
+        PdfService.merge_and_save_pdf(review_text, article)
+
         return {
             "message": "Review saved",
             "review_id": new_review.id,
             "is_final": is_final,
-            "review_pdf_path": "null şimdilik" 
+            "review_pdf_path": article.review_pdf_path 
         }, 200
-    
-    @staticmethod    
+
+    @staticmethod
     def list_all_reviewers_service():
         reviewers = User.query.filter_by(role="reviewer").all()
         results = []
@@ -95,41 +92,41 @@ class ReviewerService:
                 "email": rev.email,
                 "created_at": rev.created_at.isoformat() if rev.created_at else None,
                 "updated_at": rev.updated_at.isoformat() if rev.updated_at else None,
-                "role" : rev.role,
-                "interests" : rev.interests
+                "role": rev.role,
+                "interests": rev.interests
             })
+        return {"reviewers": results}, 200
 
-        return {"reviewers": results}, 200,
-    
     @staticmethod
     def publish_article_service(article_id, reviewer_id=None):
-   
+
         article = Article.query.get(article_id)
         if not article:
             return {"error": "Article not found."}, 404
 
-        
         if not article.original_pdf_path or not os.path.exists(article.original_pdf_path):
             return {"error": "Review PDF not found or missing. Can't publish."}, 400
 
-      
-
-       
         base_filename = os.path.basename(article.original_pdf_path)
         published_path = os.path.join(PUBLISHED_FOLDER, base_filename)
 
-       
-        shutil.copy(article.original_pdf_path, published_path)
+        
+        with open(article.original_pdf_path, "rb") as f:
+            enc_data = f.read()
+        
+        dec_data = EncryptionService.decrypt_data(enc_data)
 
-    
+        
+        with open(published_path, "wb") as pub:
+            pub.write(dec_data)
+
         article.published_pdf_path = published_path
         article.status = "published"
         db.session.commit()
 
-      
         new_log = Log(
             article_id=article.id,
-            user_id=reviewer_id, 
+            user_id=reviewer_id,
             action="article_published"
         )
         db.session.add(new_log)
