@@ -47,7 +47,7 @@ function ArticlePage() {
         if (article && article.anonymized_pdf_path) {
             const parts = article.anonymized_pdf_path.split(/[\\/]/);
             const fileName = parts[parts.length - 1];
-            navigate(`/anonym?file=${fileName}`);
+            navigate(`/anonym?file=${fileName}&id=${articleId}`);
         } else {
             alert("Anonymous PDF is not available.");
         }

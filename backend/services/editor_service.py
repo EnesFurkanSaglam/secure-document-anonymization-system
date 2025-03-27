@@ -124,10 +124,10 @@ class EditorService:
     @staticmethod
     def list_article_messages_service(tracking_code):
         if not tracking_code:
-            return {"error": "tracking_code required"},400
+            return {"error": "tracking_code required"}, 400
         article = Article.query.filter_by(tracking_code=tracking_code).first()
         if not article:
-            return {"error": "Article not found"},404
+            return {"error": "Article not found"}, 404
         
         msgs = Message.query.filter_by(article_id=article.id).order_by(Message.created_at.asc()).all()
         conversation = []
@@ -172,3 +172,43 @@ class EditorService:
         db.session.commit()
 
         return {"message": "Message sent to author."}, 200
+
+    @staticmethod
+    def assign_article_manually_service(article_id, reviewer_id):
+        
+        if not article_id or not reviewer_id:
+            return {"error": "article_id and reviewer_id are required."}, 400
+        try:
+            article_id_int = int(article_id)
+            reviewer_id_int = int(reviewer_id)
+        except ValueError:
+            return {"error": "article_id and reviewer_id must be integers."}, 400
+
+        article = Article.query.get(article_id_int)
+        if not article:
+            return {"error": "Article not found."}, 404
+
+        reviewer = User.query.get(reviewer_id_int)
+        if not reviewer:
+            return {"error": "Reviewer not found."}, 404
+
+        editor = User.query.filter_by(role="editor").first()
+        if not editor:
+            return {"error": "Editor not found."}, 500
+
+        
+        previous_assignments = ArticleAssignment.query.filter_by(article_id=article.id).all()
+        for assignment in previous_assignments:
+            db.session.delete(assignment)
+
+        
+        new_assignment = ArticleAssignment(article_id=article.id, reviewer_id=reviewer.id)
+        db.session.add(new_assignment)
+
+        
+        log = Log(article_id=article.id, user_id=editor.id, action="manual_assignment")
+        db.session.add(log)
+        db.session.commit()
+
+        return {"message": f"Article {article.id} manually assigned to reviewer {reviewer.id}."}, 200
+
