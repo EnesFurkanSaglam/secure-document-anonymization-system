@@ -45,12 +45,17 @@ function OriginalArticlePage() {
                         <div className="original-checkbox-group">
                             <label className="original-checkbox-label">
                                 <input type="checkbox" className="original-checkbox" />
-                                <span className="original-checkbox-text">Example</span>
+                                <span className="original-checkbox-text">Author Comunicate Info</span>
                             </label>
 
                             <label className="original-checkbox-label">
                                 <input type="checkbox" className="original-checkbox" />
-                                <span className="original-checkbox-text">Example</span>
+                                <span className="original-checkbox-text">Author Photos</span>
+                            </label>
+
+                            <label className="original-checkbox-label">
+                                <input type="checkbox" className="original-checkbox" />
+                                <span className="original-checkbox-text">Author Names and establishment Info </span>
                             </label>
                         </div>
 

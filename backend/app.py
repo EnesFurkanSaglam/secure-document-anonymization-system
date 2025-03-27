@@ -25,7 +25,6 @@ def create_app():
     with app.app_context():
         db.create_all()
 
-    # Şifreleme anahtarını environment'tan alıp EncryptionService'i başlatalım
     ENC_KEY = os.environ.get("ENCRYPTION_KEY")
     if not ENC_KEY:
         raise ValueError("ENCRYPTION_KEY environment variable is not set. Please set it before running.")
@@ -33,10 +32,7 @@ def create_app():
 
     @app.route('/pdf/<path:filename>')
     def serve_pdf(filename):
-        """
-        Diskte ORIGINAL_FOLDER altında şifreli PDF saklı.
-        Bellekte deşifre edip tarayıcıya gönderir.
-        """
+
         file_path = os.path.join(ORIGINAL_FOLDER, filename)
         if not os.path.exists(file_path):
             abort(404)
@@ -46,7 +42,7 @@ def create_app():
         try:
             decrypted_data = EncryptionService.decrypt_data(encrypted_data)
         except Exception:
-            abort(404)  # Dosya çözülemiyorsa 404 vs.
+            abort(404)
 
         return send_file(
             io.BytesIO(decrypted_data),
@@ -57,10 +53,7 @@ def create_app():
 
     @app.route('/pdf/anonym/<path:filename>')
     def serve_anonym_pdf(filename):
-        """
-        Diskte ANONYMIZED_FOLDER altında şifreli PDF saklı.
-        Bellekte deşifre edip tarayıcıya gönderir.
-        """
+
         file_path = os.path.join(ANONYMIZED_FOLDER, filename)
         if not os.path.exists(file_path):
             abort(404)
@@ -81,10 +74,7 @@ def create_app():
     
     @app.route('/pdf/rewiev/<path:filename>')
     def serve_rewiev_pdf(filename):
-        """
-        Diskte REVIEWS_FOLDER altında şifreli PDF saklı.
-        Bellekte deşifre edip tarayıcıya gönderir.
-        """
+
         file_path = os.path.join(REVIEWS_FOLDER, filename)
         if not os.path.exists(file_path):
             abort(404)
@@ -105,17 +95,14 @@ def create_app():
 
     @app.route('/pdf/publish/<path:filename>')
     def serve_publish_pdf(filename):
-        """
-        Bu rotada 'published' dosyalar düz PDF olarak saklanıyor. 
-        O yüzden yine send_from_directory ile ham PDF dönüyoruz.
-        """
+
         file_path = os.path.join(PUBLISHED_FOLDER, filename)
         if os.path.exists(file_path):
             return send_from_directory(PUBLISHED_FOLDER, filename)
         else:
             abort(404)
 
-    # Blueprint registration
+    
     app.register_blueprint(author_bp, url_prefix="/author")
     app.register_blueprint(editor_bp, url_prefix="/editor")
     app.register_blueprint(reviewer_bp, url_prefix="/reviewer")
