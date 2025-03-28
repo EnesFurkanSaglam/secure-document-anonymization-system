@@ -8,9 +8,18 @@ function CheckStatusPage() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const isEmailValid = (email) => {
+        return email.includes('@');
+    };
+
     const handleCheckStatus = async () => {
         if (!email || !trackingCode) {
             setError("Email and tracking code are required.");
+            return;
+        }
+
+        if (!isEmailValid(email)) {
+            setError("Please enter a valid email address.");
             return;
         }
 
@@ -70,7 +79,7 @@ function CheckStatusPage() {
                 <button
                     className="csp-button"
                     onClick={handleCheckStatus}
-                    disabled={loading}
+                    disabled={loading || !isEmailValid(email)}
                 >
                     {loading ? "Checking..." : "Check Status"}
                 </button>

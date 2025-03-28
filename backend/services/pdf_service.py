@@ -111,19 +111,19 @@ class PdfService:
             enc_data = f.read()
         dec_data = EncryptionService.decrypt_data(enc_data)
 
-        # PDF dosyası geçici bir dosyaya yazılıyor
+        
         with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             tmp.write(dec_data)
             tmp.flush()
             temp_path = tmp.name
 
-        # PDF'in tüm metnini elde ediyoruz
+       
         full_text = extract_text_from_pdf(temp_path)
 
-        # İşlemlerimizi yürüteceğimiz dosya yolu; başlangıçta orijinal temp_path
+        
         processed_pdf_path = temp_path
 
-        # Eğer metin anonimleştirme seçildiyse:
+        
         if anonymize_names:
             first_person, extracted_text = find_first_person_name_and_extract_context(full_text)
             sensitive_entities = set()
@@ -137,20 +137,20 @@ class PdfService:
             censor_pdf(temp_path, words_to_censor, redacted_pdf_path)
             processed_pdf_path = redacted_pdf_path
 
-        # Final işlem için geçici bir dosya; burada yüzlerin bulanıklaştırılması yapılacak
+        
         final_plain_pdf_path = os.path.join(tempfile.gettempdir(), f"final_{base_filename}")
         if anonymize_photos:
             PdfService.blur_pdf_faces(processed_pdf_path, final_plain_pdf_path)
             processed_pdf_path = final_plain_pdf_path
 
-        # Sonuç dosyasını şifreleyip, hedef klasöre yazıyoruz
+        
         with open(processed_pdf_path, "rb") as f:
             final_plain_data = f.read()
         final_enc_data = EncryptionService.encrypt_data(final_plain_data)
         with open(destination_path, "wb") as f:
             f.write(final_enc_data)
 
-        # Kullanılan geçici dosyaların temizlenmesi
+        
         if os.path.exists(temp_path):
             os.remove(temp_path)
         if anonymize_names and os.path.exists(redacted_pdf_path):
@@ -158,11 +158,11 @@ class PdfService:
         if anonymize_photos and os.path.exists(final_plain_pdf_path):
             os.remove(final_plain_pdf_path)
 
-        # Makale güncelleniyor ve reviewer ataması yapılıyor
+        
         article.anonymized_pdf_path = destination_path
         article.status = "assigned"
 
-        # Makaleden anahtar kelimeler çıkarılıyor
+        
         article_keywords = PdfService.extract_keywords(full_text, max_keywords=5)
 
         nlp = spacy.load("en_core_web_md")
@@ -191,7 +191,7 @@ class PdfService:
         if not best_reviewer:
             best_reviewer = reviewers[0]
 
-        # Önceki atamalar siliniyor
+        
         existing_assignments = ArticleAssignment.query.filter_by(article_id=article.id, active=True).all()
         for assignment in existing_assignments:
             associated_reviews = Review.query.filter_by(assignment_id=assignment.id).all()

@@ -9,6 +9,7 @@ from .assignment import ArticleAssignment
 from .review import Review
 from .message import Message
 from .log import Log
+from .labeltext import LabelText
 
 
 __all__= [
@@ -18,5 +19,6 @@ __all__= [
     "ArticleAssignment",
     "Review",
     "Message",
-    "Log"
+    "Log",
+    "LabelText"
 ]
