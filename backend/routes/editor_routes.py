@@ -47,8 +47,12 @@ def send_message_as_editor():
 def anonymize_and_assign_article():
     body = request.json or {}
     article_id = str(body.get("article_id", "")).strip()
-    data, code = pdf_service.anonymize_and_assign(article_id)
+    anonymize_names = body.get("anonymize_names", False)
+    anonymize_photos = body.get("anonymize_photos", False)
+    
+    data, code = pdf_service.anonymize_and_assign(article_id, anonymize_names, anonymize_photos)
     return jsonify(data), code
+
 
 @editor_bp.route("/assign-article", methods=["POST"])
 def assign_article_manually():

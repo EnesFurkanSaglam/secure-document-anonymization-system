@@ -8,7 +8,7 @@ function AnonymArticlePage() {
     const queryParams = new URLSearchParams(location.search);
     const fileName = queryParams.get('file');
     const articleId = queryParams.get('id');
-    const pdfUrl = fileName ? `http://127.0.0.1:5000/pdf/${fileName}` : null;
+    const pdfUrl = fileName ? `http://127.0.0.1:5000/pdf/anonym/${fileName}` : null;
 
     const [showReviewers, setShowReviewers] = useState(false);
     const [reviewers, setReviewers] = useState([]);

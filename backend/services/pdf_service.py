@@ -3,12 +3,24 @@ import io
 import tempfile
 import fitz
 import spacy
+import cv2
+import numpy as np
+from pdf2image import convert_from_path
+from fpdf import FPDF
 from sklearn.feature_extraction.text import TfidfVectorizer
 from PyPDF2 import PdfReader, PdfWriter
 from reportlab.pdfgen import canvas
-from models import db, Article, ArticleAssignment, Log, User
+from models import db, Article, ArticleAssignment, Log, User,Review
 from config import ANONYMIZED_FOLDER, REVIEWS_FOLDER
 from services.encryption_service import EncryptionService
+
+from services.anonim import (
+    extract_text_from_pdf,
+    find_first_person_name_and_extract_context,
+    get_entities_ensemble,
+    find_emails,
+    censor_pdf
+)
 
 class PdfService:
 
@@ -47,8 +59,43 @@ class PdfService:
         return ", ".join(keywords)
 
     @staticmethod
-    def anonymize_and_assign(article_id):
+    def blur_pdf_faces(input_pdf_path, output_pdf_path):
+        
+        poppler_path = r"D:\\NS\\ca_Secure Document Anonymization System\\poppler-24.08.0\\Library\bin"
+       
+        pages = convert_from_path(input_pdf_path, dpi=300, poppler_path=poppler_path)
+        face_cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
+        face_cascade = cv2.CascadeClassifier(face_cascade_path)
+        processed_image_paths = []
 
+        for i, page in enumerate(pages):
+            
+            img = cv2.cvtColor(np.array(page), cv2.COLOR_RGB2BGR)
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            
+            faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+            for (x, y, w, h) in faces:
+                face_roi = img[y:y+h, x:x+w]
+                blurred_face = cv2.GaussianBlur(face_roi, (99, 99), 30)
+                img[y:y+h, x:x+w] = blurred_face
+            
+            temp_img_path = os.path.join(tempfile.gettempdir(), f"temp_blur_page_{i}.jpg")
+            cv2.imwrite(temp_img_path, img)
+            processed_image_paths.append(temp_img_path)
+
+        
+        pdf = FPDF()
+        for image in processed_image_paths:
+            pdf.add_page()
+            
+            pdf.image(image, x=0, y=0, w=210, h=297)
+        pdf.output(output_pdf_path, "F")
+        
+        for image in processed_image_paths:
+            os.remove(image)
+
+    @staticmethod
+    def anonymize_and_assign(article_id, anonymize_names=False, anonymize_photos=False):
         article = Article.query.filter_by(id=article_id).first()
         if not article:
             return {"error": "Article not found"}, 404
@@ -63,25 +110,59 @@ class PdfService:
         with open(source_path, "rb") as f:
             enc_data = f.read()
         dec_data = EncryptionService.decrypt_data(enc_data)
-        new_enc_data = EncryptionService.encrypt_data(dec_data)
-        with open(destination_path, "wb") as f:
-            f.write(new_enc_data)
 
-        article.anonymized_pdf_path = destination_path
-        article.status = "assigned"
-
+        # PDF dosyası geçici bir dosyaya yazılıyor
         with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             tmp.write(dec_data)
             tmp.flush()
             temp_path = tmp.name
 
-        full_text = ""
-        doc = fitz.open(temp_path)
-        for page in doc:
-            full_text += page.get_text()
-        doc.close()
-        os.remove(temp_path)
+        # PDF'in tüm metnini elde ediyoruz
+        full_text = extract_text_from_pdf(temp_path)
 
+        # İşlemlerimizi yürüteceğimiz dosya yolu; başlangıçta orijinal temp_path
+        processed_pdf_path = temp_path
+
+        # Eğer metin anonimleştirme seçildiyse:
+        if anonymize_names:
+            first_person, extracted_text = find_first_person_name_and_extract_context(full_text)
+            sensitive_entities = set()
+            if extracted_text:
+                sensitive_entities.update(get_entities_ensemble(extracted_text))
+            emails = find_emails(full_text)
+            if emails:
+                sensitive_entities.update(emails)
+            words_to_censor = list(sensitive_entities)
+            redacted_pdf_path = os.path.join(tempfile.gettempdir(), f"redacted_{base_filename}")
+            censor_pdf(temp_path, words_to_censor, redacted_pdf_path)
+            processed_pdf_path = redacted_pdf_path
+
+        # Final işlem için geçici bir dosya; burada yüzlerin bulanıklaştırılması yapılacak
+        final_plain_pdf_path = os.path.join(tempfile.gettempdir(), f"final_{base_filename}")
+        if anonymize_photos:
+            PdfService.blur_pdf_faces(processed_pdf_path, final_plain_pdf_path)
+            processed_pdf_path = final_plain_pdf_path
+
+        # Sonuç dosyasını şifreleyip, hedef klasöre yazıyoruz
+        with open(processed_pdf_path, "rb") as f:
+            final_plain_data = f.read()
+        final_enc_data = EncryptionService.encrypt_data(final_plain_data)
+        with open(destination_path, "wb") as f:
+            f.write(final_enc_data)
+
+        # Kullanılan geçici dosyaların temizlenmesi
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        if anonymize_names and os.path.exists(redacted_pdf_path):
+            os.remove(redacted_pdf_path)
+        if anonymize_photos and os.path.exists(final_plain_pdf_path):
+            os.remove(final_plain_pdf_path)
+
+        # Makale güncelleniyor ve reviewer ataması yapılıyor
+        article.anonymized_pdf_path = destination_path
+        article.status = "assigned"
+
+        # Makaleden anahtar kelimeler çıkarılıyor
         article_keywords = PdfService.extract_keywords(full_text, max_keywords=5)
 
         nlp = spacy.load("en_core_web_md")
@@ -109,6 +190,14 @@ class PdfService:
 
         if not best_reviewer:
             best_reviewer = reviewers[0]
+
+        # Önceki atamalar siliniyor
+        existing_assignments = ArticleAssignment.query.filter_by(article_id=article.id, active=True).all()
+        for assignment in existing_assignments:
+            associated_reviews = Review.query.filter_by(assignment_id=assignment.id).all()
+            for review in associated_reviews:
+                db.session.delete(review)
+            db.session.delete(assignment)
 
         new_assignment = ArticleAssignment(
             article_id=article.id,
@@ -140,6 +229,9 @@ class PdfService:
             "article_keywords": article_keywords,
             "ensemble_similarity_score": best_ensemble_score
         }, 200
+
+
+
 
     @staticmethod
     def merge_and_save_pdf(review_text, article):
