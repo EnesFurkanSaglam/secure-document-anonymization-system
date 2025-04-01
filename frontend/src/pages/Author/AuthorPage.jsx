@@ -11,34 +11,45 @@ const AuthorPage = () => {
 
     return (
         <div className="author-container">
-            <header className="author-header">
-                <h1 className="author-title">Author Dashboard</h1>
-            </header>
-            <div className="author-actions">
-                <button
-                    className="author-btn author-btn-upload"
-                    onClick={() => handleNavigation('/upload')}
-                >
-                    Upload Article
-                </button>
-                <button
-                    className="author-btn author-btn-reupload"
-                    onClick={() => handleNavigation('/reupload')}
-                >
-                    Reupload Article
-                </button>
-                <button
-                    className="author-btn author-btn-check"
-                    onClick={() => handleNavigation('/check-status')}
-                >
-                    Check Status
-                </button>
-                <button
-                    className="author-btn author-btn-message"
-                    onClick={() => handleNavigation('/messaging')}
-                >
-                    Messaging
-                </button>
+            <div className="author-card">
+                <header className="author-header">
+                    <h1 className="author-title">Author Dashboard</h1>
+                    <p className="author-subtitle">Manage your content and communications</p>
+                </header>
+
+                <div className="author-actions">
+                    <button
+                        className="author-btn upload"
+                        onClick={() => handleNavigation('/upload')}
+                    >
+                        <span className="btn-icon">+</span>
+                        <span className="btn-text">Upload Article</span>
+                    </button>
+
+                    <button
+                        className="author-btn reupload"
+                        onClick={() => handleNavigation('/reupload')}
+                    >
+                        <span className="btn-icon">↑</span>
+                        <span className="btn-text">Reupload Article</span>
+                    </button>
+
+                    <button
+                        className="author-btn check"
+                        onClick={() => handleNavigation('/check-status')}
+                    >
+                        <span className="btn-icon">✓</span>
+                        <span className="btn-text">Check Status</span>
+                    </button>
+
+                    <button
+                        className="author-btn message"
+                        onClick={() => handleNavigation('/messaging')}
+                    >
+                        <span className="btn-icon">✉</span>
+                        <span className="btn-text">Messaging</span>
+                    </button>
+                </div>
             </div>
         </div>
     );

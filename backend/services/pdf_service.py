@@ -61,7 +61,7 @@ class PdfService:
     @staticmethod
     def blur_pdf_faces(input_pdf_path, output_pdf_path):
         
-        poppler_path = r"D:\\NS\\ca_Secure Document Anonymization System\\poppler-24.08.0\\Library\bin"
+        poppler_path = r"D:\\NS\\ca_Secure Document Anonymization System\\secure-document-anonymization-system\\dependencies\\poppler-24.08.0\\Library\bin"
        
         pages = convert_from_path(input_pdf_path, dpi=300, poppler_path=poppler_path)
         face_cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'

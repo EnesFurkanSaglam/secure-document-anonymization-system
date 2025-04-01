@@ -2,71 +2,146 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 40px 20px;
-    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f7fa;
+    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.author-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 800px;
+    padding: 40px;
+    transition: transform 0.3s ease;
+}
+
+.author-card:hover {
+    transform: translateY(-5px);
 }
 
 .author-header {
     margin-bottom: 40px;
+    text-align: center;
 }
 
 .author-title {
-    font-size: 2.5em;
+    font-size: 2.5rem;
     color: #333;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.author-subtitle {
+    color: #666;
+    font-size: 1.1rem;
+    margin-top: 0;
 }
 
 .author-actions {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     gap: 20px;
-    flex-wrap: wrap;
 }
 
 .author-btn {
-    background-color: #2196F3;
-    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    color: #444;
     border: none;
-    border-radius: 8px;
-    padding: 20px 30px;
-    font-size: 1.1em;
+    border-radius: 12px;
+    padding: 24px 20px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    height: 130px;
+}
+
+.btn-icon {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.btn-text {
+    font-weight: 600;
 }
 
 .author-btn:hover {
-    background-color: #1976D2;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-.author-btn-upload {
-    background-color: #4CAF50;
+.author-btn:hover .btn-icon {
+    transform: scale(1.1);
 }
 
-.author-btn-upload:hover {
-    background-color: #43A047;
+/* Button specific styling */
+.author-btn.upload {
+    border-bottom: 4px solid #4CAF50;
 }
 
-.author-btn-reupload {
-    background-color: #FF9800;
+.author-btn.upload .btn-icon {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
 }
 
-.author-btn-reupload:hover {
-    background-color: #FB8C00;
+.author-btn.reupload {
+    border-bottom: 4px solid #FF9800;
 }
 
-.author-btn-check {
-    background-color: #9C27B0;
+.author-btn.reupload .btn-icon {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: #FF9800;
 }
 
-.author-btn-check:hover {
-    background-color: #8E24AA;
+.author-btn.check {
+    border-bottom: 4px solid #9C27B0;
 }
 
-.author-btn-message {
-    background-color: #F44336;
+.author-btn.check .btn-icon {
+    background-color: rgba(156, 39, 176, 0.1);
+    color: #9C27B0;
 }
 
-.author-btn-message:hover {
-    background-color: #E53935;
+.author-btn.message {
+    border-bottom: 4px solid #F44336;
+}
+
+.author-btn.message .btn-icon {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #F44336;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .author-card {
+        padding: 30px 20px;
+    }
+
+    .author-title {
+        font-size: 2rem;
+    }
+
+    .author-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .author-btn {
+        height: 110px;
+    }
 }

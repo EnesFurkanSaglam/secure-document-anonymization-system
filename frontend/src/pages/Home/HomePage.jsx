@@ -26,35 +26,45 @@ const HomePage = () => {
 
     return (
         <div className="home-container">
-            <h1 className="home-welcome">Welcome!</h1>
-            <p className="home-description">
-                Welcome Secure Document Anonymization System. Please select role.
-            </p>
-            <div className="home-buttons">
-                <button
-                    className="home-button home-button-author"
-                    onClick={() => handleRoleClick('author')}
-                >
-                    Author
-                </button>
-                <button
-                    className="home-button home-button-editor"
-                    onClick={() => handleRoleClick('editor')}
-                >
-                    Editor
-                </button>
-                <button
-                    className="home-button home-button-reviewer"
-                    onClick={() => handleRoleClick('reviewer')}
-                >
-                    Reviewer
-                </button>
-                <button
-                    className="home-button home-button-reviewer"
-                    onClick={() => handleRoleClick('published')}
-                >
-                    Published Article
-                </button>
+            <div className="home-content">
+                <h1 className="home-welcome">Welcome</h1>
+                <p className="home-description">
+                    Welcome to Secure Document Anonymization System. Please select your role.
+                </p>
+
+                <div className="home-buttons">
+                    <button
+                        className="home-button home-button-author"
+                        onClick={() => handleRoleClick('author')}
+                    >
+                        <span className="button-icon">📝</span>
+                        <span>Author</span>
+                    </button>
+
+                    <button
+                        className="home-button home-button-editor"
+                        onClick={() => handleRoleClick('editor')}
+                    >
+                        <span className="button-icon">✏️</span>
+                        <span>Editor</span>
+                    </button>
+
+                    <button
+                        className="home-button home-button-reviewer"
+                        onClick={() => handleRoleClick('reviewer')}
+                    >
+                        <span className="button-icon">👁️</span>
+                        <span>Reviewer</span>
+                    </button>
+
+                    <button
+                        className="home-button home-button-published"
+                        onClick={() => handleRoleClick('published')}
+                    >
+                        <span className="button-icon">📄</span>
+                        <span>Published Article</span>
+                    </button>
+                </div>
             </div>
         </div>
     );
