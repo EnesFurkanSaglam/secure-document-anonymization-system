@@ -38,12 +38,63 @@ def find_first_person_name_and_extract_context(text):
     return None, None
 
 def get_entities_ensemble(text):
+    import spacy
+
     nlp_lg = spacy.load("en_core_web_lg")
     nlp_trf = spacy.load("en_core_web_trf")
-    
+
+    # Genişletilmiş İngilizce excluded listesi
+    excluded = set(map(str.lower, {
+        # AI & ML
+        "deep learning", "machine learning", "generative ai", "neural networks",
+        "transformer", "bert", "gpt", "llm", "rnn", "cnn", "lstm", "vae", "gan",
+        "reinforcement learning", "supervised learning", "unsupervised learning",
+        "zero-shot learning", "few-shot learning", "transfer learning",
+
+        # NLP
+        "nlp", "natural language processing", "pos tagging", "ner", "lemmatization",
+        "tokenization", "dependency parsing", "coreference resolution", "word2vec", "glove",
+        "sentence embedding", "text summarization", "text classification", "question answering",
+
+        # Computer Vision
+        "computer vision", "image classification", "object detection", "segmentation",
+        "yolo", "faster rcnn", "ssd", "resnet", "imagenet", "openpose",
+
+        # Data Science & Viz
+        "data mining", "data visualization", "tsne", "pca", "hadoop", "spark", "tableau",
+        "power bi", "matplotlib", "seaborn", "plotly", "bokeh", "timeseries analysis",
+        "big data", "etl", "data warehouse",
+
+        # UI/UX, BCI, AR/VR
+        "bci", "brain-computer interface", "user experience design", "ux", "ui",
+        "ar", "vr", "augmented reality", "virtual reality", "xr", "hci", "oculus", "hololens",
+
+        # Cybersecurity
+        "encryption algorithms", "aes", "rsa", "ecc", "hashing", "sha256", "md5",
+        "public key", "private key", "digital forensics", "authentication systems",
+        "penetration testing", "network security", "malware", "phishing", "zero-day", "xss", "csrf",
+
+        # Secure Development
+        "secure software development", "owasp", "code injection", "buffer overflow",
+        "input validation", "access control", "vulnerability", "threat modeling",
+
+        # Networks, Cloud, Distributed Systems
+        "5g", "next-generation networks", "cloud computing", "distributed systems",
+        "edge computing", "fog computing", "aws", "azure", "gcp", "virtual machines",
+        "containers", "kubernetes", "docker",
+
+        # Blockchain
+        "blockchain", "p2p", "decentralized systems", "ethereum", "smart contracts",
+        "consensus algorithms", "bitcoin", "ipfs", "dapps", "solidity", "web3",
+
+        # Extra tech/platforms/tools
+        "ieee", "eeg", "json", "html", "css", "http", "https", "api", "sdk",
+        "ssh", "dns", "ftp", "sql", "nosql", "jwt", "yaml", "csv", "docx", "pptx",
+        "github", "gitlab", "stackoverflow", "huggingface", "openai"
+    }))
+
     entities = set()
-    excluded = {"eeg", "ieee"}
-    
+
     for nlp_model in [nlp_lg, nlp_trf]:
         doc = nlp_model(text)
         for ent in doc.ents:
@@ -51,7 +102,9 @@ def get_entities_ensemble(text):
                 ent_text = ent.text.strip()
                 if ent_text.lower() not in excluded:
                     entities.add(ent_text)
+
     return entities
+
 
 def find_emails(text):
     email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+'
