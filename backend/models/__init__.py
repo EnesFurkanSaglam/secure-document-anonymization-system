@@ -9,7 +9,6 @@ from .assignment import ArticleAssignment
 from .review import Review
 from .message import Message
 from .log import Log
-from .labeltext import LabelText
 
 
 __all__= [

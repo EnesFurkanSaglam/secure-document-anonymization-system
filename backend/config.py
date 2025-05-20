@@ -6,7 +6,7 @@ ANONYMIZED_FOLDER = os.path.join(BASE_UPLOAD_FOLDER, "anonymized")
 REVIEWS_FOLDER = os.path.join(BASE_UPLOAD_FOLDER, "reviews")
 PUBLISHED_FOLDER = os.path.join(BASE_UPLOAD_FOLDER, "published")
 
-POPPLER_PATH = "D:\\NS\\ca_Secure Document Anonymization System\\poppler-24.08.0\\Library\\bin"
+POPPLER_PATH = "../dependencies/poppler-24.08.0/Library/bin"
 
 
 
